@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
-using SampleCode.Services;
-using SampleCode.ViewModels;
+using HeroLabExportToPdf.Services;
+using HeroLabExportToPdf.ViewModels;
 
-namespace SampleCode
+namespace HeroLabExportToPdf
 {
     public class Bootstrapper : BootstrapperBase
     {

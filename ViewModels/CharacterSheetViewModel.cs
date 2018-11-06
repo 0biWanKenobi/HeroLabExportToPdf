@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Caliburn.Micro;
 
-namespace SampleCode.ViewModels
+namespace HeroLabExportToPdf.ViewModels
 {
     public class CharacterSheetViewModel : Screen
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SampleCode.Business
+namespace HeroLabExportToPdf.Business
 {
     public class AsposeLicense
     {

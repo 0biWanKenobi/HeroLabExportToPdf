@@ -2,7 +2,7 @@
 using Aspose.Pdf;
 using Aspose.Pdf.Devices;
 
-namespace SampleCode.Business
+namespace HeroLabExportToPdf.Business
 {
     public class PdfConvert
     {

@@ -1,7 +1,7 @@
 ﻿using Caliburn.Micro;
-using SampleCode.Services;
+using HeroLabExportToPdf.Services;
 
-namespace SampleCode.ViewModels
+namespace HeroLabExportToPdf.ViewModels
 {
     /// <inheritdoc />
     /// <summary>

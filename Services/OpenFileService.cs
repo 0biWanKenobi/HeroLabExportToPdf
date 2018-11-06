@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 
-namespace SampleCode.Services
+namespace HeroLabExportToPdf.Services
 {
      
 

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace SampleCode.Views
+namespace HeroLabExportToPdf.Views
 {
     /// <summary>
     /// Interaction logic for PdfImage.xaml

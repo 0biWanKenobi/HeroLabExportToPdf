@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="SampleCode.Views.RectangleView"
+﻿<UserControl x:Class="HeroLabExportToPdf.Views.RectangleView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:SampleCode.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:local="clr-namespace:SampleCode.ViewModels"
+             xmlns:converters="clr-namespace:HeroLabExportToPdf.Converters"
+             xmlns:local="clr-namespace:HeroLabExportToPdf.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>

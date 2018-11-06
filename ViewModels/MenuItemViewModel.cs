@@ -2,10 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Caliburn.Micro;
-using SampleCode.Commands;
+using HeroLabExportToPdf.Commands;
 
-
-namespace SampleCode.ViewModels
+namespace HeroLabExportToPdf.ViewModels
 {
     public class MenuItemViewModel : PropertyChangedBase
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace SampleCode.Converters
+namespace HeroLabExportToPdf.Converters
 {
     /// <inheritdoc />
     /// <summary>

@@ -1,8 +1,8 @@
 ﻿using System.Windows.Media.Imaging;
 using Caliburn.Micro;
-using SampleCode.Business;
+using HeroLabExportToPdf.Business;
 
-namespace SampleCode.ViewModels
+namespace HeroLabExportToPdf.ViewModels
 {
     public class PdfImageViewModel : PropertyChangedBase
     {

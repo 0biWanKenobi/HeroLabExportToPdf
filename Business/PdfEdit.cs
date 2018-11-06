@@ -2,7 +2,7 @@
 using Aspose.Pdf.Annotations;
 using Aspose.Pdf.Forms;
 
-namespace SampleCode.Business
+namespace HeroLabExportToPdf.Business
 {
     public static class PdfEdit
     {

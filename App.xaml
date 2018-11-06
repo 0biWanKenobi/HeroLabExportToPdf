@@ -1,13 +1,12 @@
-﻿<Application x:Class="FinalAttempt.App"
+﻿<Application x:Class="HeroLabExportToPdf.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:SampleCode"
-   >
+    xmlns:heroLabExportToPdf="clr-namespace:HeroLabExportToPdf">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <local:Bootstrapper x:Key="Bootstrapper" />
+                    <heroLabExportToPdf:Bootstrapper x:Key="Bootstrapper" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

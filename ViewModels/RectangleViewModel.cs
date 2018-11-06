@@ -1,11 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Caliburn.Micro;
 
-namespace SampleCode.ViewModels
+namespace HeroLabExportToPdf.ViewModels
 {
     /// <inheritdoc />
     /// <summary>

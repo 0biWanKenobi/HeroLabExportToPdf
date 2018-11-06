@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SampleCode.Observers
+namespace HeroLabExportToPdf.Observers
 {
     public static class SizeObserver
 {

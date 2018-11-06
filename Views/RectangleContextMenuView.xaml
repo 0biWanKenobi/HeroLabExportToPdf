@@ -1,7 +1,7 @@
 ﻿
     
     <ContextMenu 
-        x:Class="SampleCode.Views.RectangleContextMenuView"
+        x:Class="HeroLabExportToPdf.Views.RectangleContextMenuView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cal="http://www.caliburnproject.org"

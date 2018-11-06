@@ -1,3 +1,10 @@
+############################################################################
+# Have GitHub linguist propery categorize the project (by ignoring the xaml files, in this case)
+###############################################################################
+*.xaml linguist-vendored=true
+
+
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################

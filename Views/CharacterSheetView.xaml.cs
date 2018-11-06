@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using SampleCode.ViewModels;
+using HeroLabExportToPdf.ViewModels;
 
-namespace SampleCode.Views
+namespace HeroLabExportToPdf.Views
 {
     public partial class CharacterSheetView
     {

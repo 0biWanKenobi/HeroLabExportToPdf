@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FinalAttempt
+namespace HeroLabExportToPdf
 {
     /// <summary>
     /// Interaction logic for App.xaml

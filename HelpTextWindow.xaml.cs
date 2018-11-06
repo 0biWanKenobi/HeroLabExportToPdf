@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SampleCode
+namespace HeroLabExportToPdf
 {
     /// <summary>
     /// Interaction logic for HelpTextWindow.xaml

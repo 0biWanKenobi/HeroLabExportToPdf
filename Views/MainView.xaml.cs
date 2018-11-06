@@ -1,11 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using SampleCode.ViewModels;
+﻿using System.Windows;
 
-namespace SampleCode.Views
+namespace HeroLabExportToPdf.Views
 {
     public partial class MainView : Window
     {
