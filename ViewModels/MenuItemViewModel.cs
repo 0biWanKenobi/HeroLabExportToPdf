@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Commands;
 
 namespace HeroLabExportToPdf.ViewModels
 {
     public class MenuItemViewModel : PropertyChangedBase
     {
-        private string _text;
+        private string _text, _value;
         private bool _isItemSet;
-        private RelayCommand _command;
-       
-        public MenuItemViewModel DataContext => this;
-
+        private readonly IEventAggregator _eventAggregator;
+        
         public string Text
         {
             get => _text;
@@ -22,6 +17,17 @@ namespace HeroLabExportToPdf.ViewModels
                 if (_text == value) return;
                 _text = value;
                 NotifyOfPropertyChange(() => Text);
+            }
+        }
+
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value) return;
+                _value = value;
+                NotifyOfPropertyChange(() => Value);
             }
         }
 
@@ -36,20 +42,14 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public Action<MenuItemViewModel> CallBack { get; set; }
-
-
+       
+        
         public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
 
-        public ICommand Command => _command ?? (_command = new RelayCommand(ActionMethod));
-
-         
-
-
-        public void ActionMethod(object param)
+        public MenuItemViewModel(IEventAggregator eventAggregator)
         {
-            IsItemSet = true;
-            CallBack(this);
+            _eventAggregator = eventAggregator;
         }
+       
     }
 }

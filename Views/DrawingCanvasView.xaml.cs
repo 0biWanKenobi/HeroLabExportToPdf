@@ -3,11 +3,11 @@
 namespace HeroLabExportToPdf.Views
 {
     /// <summary>
-    /// Interaction logic for RectangleContextMenuView.xaml
+    /// Interaction logic for DrawingCanvasView.xaml
     /// </summary>
-    public partial class RectangleContextMenuView : ContextMenu
+    public partial class DrawingCanvasView : UserControl
     {
-        public RectangleContextMenuView()
+        public DrawingCanvasView()
         {
             InitializeComponent();
         }

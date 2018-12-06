@@ -1,13 +1,17 @@
 ﻿using System.Windows.Media.Imaging;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Business;
+using HeroLabExportToPdf.Services;
 
 namespace HeroLabExportToPdf.ViewModels
 {
     public class PdfImageViewModel : PropertyChangedBase
     {
-        public BitmapImage Image { get; }
+       
         private double _width, _height, _scaleX, _scaleY;
+        private BitmapImage _image;
+        private readonly IImageService _imageService;
+
+        public BitmapImage Image => _image ?? (_image = _imageService.Create());
 
         public double Width
         {
@@ -56,28 +60,11 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public PdfImageViewModel(string filePath)
+        public PdfImageViewModel(IImageService imageService)
         {
-            var imageByteArray = PdfConvert.ToImageByteArray(filePath, out var x, out var y);
-
-            Image = new BitmapImage();
-            Image.BeginInit();
-            Image.DecodePixelHeight = y*2;
-            Image.DecodePixelWidth = x*2;
-            Image.StreamSource = imageByteArray;
-            Image.EndInit();
-            PdfEdit.Init(filePath);
-
+            _imageService = imageService;
+            
         }
-
-        public void AddTextBox(double llx, double lly, double urx, double ury)
-        {
-            PdfEdit.AddField(llx, lly, urx, ury, Width, Height);
-        }
-
-        public void SavePdf(string fileName)
-        {
-            PdfEdit.Save(fileName);
-        }
+        
     }
 }

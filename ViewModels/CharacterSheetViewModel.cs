@@ -1,16 +1,30 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media;
 using Caliburn.Micro;
+using HeroLabExportToPdf.Entities.Messages;
+using HeroLabExportToPdf.Services;
 
 namespace HeroLabExportToPdf.ViewModels
 {
-    public class CharacterSheetViewModel : Screen
+    public class CharacterSheetViewModel : Screen, IHandle<CanvasDrawn>
     {
+
+        #region injected parameters
+        private readonly RectangleFactory _rectangleFactory;
+        private readonly IEventAggregator _eventAggregator;
+
+        #endregion
+
+
+        #region bindings helpers
         private RectangleViewModel _selectedRectangle;
-
         private double _rectanglesWidth, _rectanglesHeight;
+        private DrawingCanvasViewModel _dragSelectionCanvas;
+        #endregion
 
+        #region bindings
 
         public PdfImageViewModel PdfImage { get; set; }
 
@@ -36,7 +50,16 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-       
+        public DrawingCanvasViewModel DragSelectionCanvas
+        {
+            get => _dragSelectionCanvas;
+            set
+            {
+                if (_dragSelectionCanvas == value) return;
+                _dragSelectionCanvas = value;
+                NotifyOfPropertyChange(() => DragSelectionCanvas);
+            }
+        }
 
         /// <summary>
         /// The list of rectangles that is displayed in the ListBox.
@@ -57,47 +80,55 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-  
+#endregion
 
-        public CharacterSheetViewModel(string filePath)
+        private readonly SynchronizationContext _context;
+
+        public CharacterSheetViewModel(PdfImageViewModel image, DrawingCanvasViewModel drawingCanvasViewModel,
+            RectangleFactory rectangleFactory, IEventAggregator eventAggregator)
         {
-            PdfImage = new PdfImageViewModel(filePath);
-            PdfImage.PropertyChanged += ScaleContent;
+            PdfImage = image;
+            _rectangleFactory = rectangleFactory;
+            _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
+            DragSelectionCanvas = drawingCanvasViewModel;
+            _context = SynchronizationContext.Current;
         }
 
-      
 
-        public void DeleteRectangle(ActionExecutionContext context)
+        public void DeleteRectangle(bool deleted)
         {
-            if (context.EventArgs is KeyEventArgs keyArgs && keyArgs.Key == Key.Delete)
+            if (deleted)
             {
                 while(_selectedRectangle != null)
                 {
-                    _selectedRectangle.ResetSelectedItem();
                     Rectangles.Remove(_selectedRectangle);
                 }
             }
         }
 
-        public void ScaleContent(object o, PropertyChangedEventArgs  eventArgs)
+
+        public bool CanScaleContent => true;
+        public void ScaleContent((double width, double height) imageSize)
         {
+            RectanglesWidth = imageSize.width;
+            RectanglesHeight = imageSize.height;
+            _eventAggregator.Publish(
+                new ImageResize{ScaleX = PdfImage.ScaleX, ScaleY = PdfImage.ScaleY },
+                action => {
+                    Task.Factory.StartNew(action);
+                }
+            );
+        }
 
-            
-            if (eventArgs == null) return;
+        public void Handle(CanvasDrawn message)
+        {
+            var newField = _rectangleFactory.Create(this, message.X, message.Y, message.Width, message.Height,
+                Color.FromArgb(200, 129, 63, 191));
+            _context.Send(c =>
+                    Rectangles.Add(newField)
+                , null);
 
-            switch (eventArgs.PropertyName)
-            {
-                case "Width": RectanglesWidth = PdfImage.Width;
-                    break;
-                case "Height":RectanglesHeight = PdfImage.Height;
-                    break;
-                case "ScaleX":
-                    foreach (var rectangle in Rectangles) rectangle.ScaleX = PdfImage.ScaleX;
-                    break;
-                case "ScaleY": 
-                    foreach (var rectangle in Rectangles) rectangle.ScaleY = PdfImage.ScaleY;
-                    break;
-            }
         }
     }
 }

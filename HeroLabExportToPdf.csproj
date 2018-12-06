@@ -41,11 +41,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aspose.PDF">
-      <HintPath>packages\Aspose.PDF for .Net v18.4\net4.0\Aspose.PDF.dll</HintPath>
-    </Reference>
     <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Logging, Version=2.0.3.0, Culture=neutral, PublicKeyToken=b352957eadd947b7, processorArchitecture=MSIL">
+      <HintPath>packages\Caliburn.Micro.Logging.2.0.3.0\lib\portable-net45+win+wpa81+wp80\Caliburn.Micro.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Caliburn.Micro.Platform, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
@@ -79,25 +79,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Business\AsposeLicense.cs" />
-    <Compile Include="Business\PdfConvert.cs" />
-    <Compile Include="Business\PdfEdit.cs" />
+    <Compile Include="BindingProxy.cs" />
+    <Compile Include="Caliburn\Micro\Logging\DebugLogger.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Services\BaseFileService.cs" />
+    <Compile Include="Services\CoordinateTranslationService.cs" />
+    <Compile Include="Services\ICoordinateTranslationService.cs" />
+    <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\IImageService.cs" />
+    <Compile Include="Services\ImageService.cs" />
     <Compile Include="Services\IOpenFileService.cs" />
+    <Compile Include="Services\ISaveFileService.cs" />
     <Compile Include="Services\OpenFileService.cs" />
+    <Compile Include="Services\RectangleFactory.cs" />
+    <Compile Include="Services\SaveFileService.cs" />
     <Compile Include="ViewModels\CharacterSheetViewModel.cs" />
+    <Compile Include="ViewModels\DrawingCanvasViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\PdfImageViewModel.cs" />
     <Compile Include="Observers\SizeObserver.cs" />
     <Compile Include="ViewModels\MenuItemViewModel.cs" />
     <Compile Include="Views\CharacterSheetView.xaml.cs">
       <DependentUpon>CharacterSheetView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DrawingCanvasView.xaml.cs">
+      <DependentUpon>DrawingCanvasView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PdfImageView.xaml.cs">
       <DependentUpon>PdfImageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RectangleContextMenuView.xaml.cs">
-      <DependentUpon>RectangleContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RectangleView.xaml.cs">
       <DependentUpon>RectangleView.xaml</DependentUpon>
@@ -114,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\DrawingCanvasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,10 +141,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\PdfImageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\RectangleContextMenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,6 +181,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="HeroLabExportToPdf.Business\HeroLabExportToPdf.Business.csproj">
+      <Project>{414DA809-4ABF-46D7-914E-29156141F27E}</Project>
+      <Name>HeroLabExportToPdf.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="HeroLabExportToPdf.Entities\HeroLabExportToPdf.Entities.csproj">
+      <Project>{6362cecb-bad9-42d6-ad17-193c99c410e2}</Project>
+      <Name>HeroLabExportToPdf.Entities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

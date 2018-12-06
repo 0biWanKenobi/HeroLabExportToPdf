@@ -12,24 +12,20 @@ namespace HeroLabExportToPdf.Business
             AsposeLicense.Register();
         }
 
-        public static Stream ToImageByteArray(string pdfFileName, out int x, out int y)
+        public static Stream ToStream(string pdfFileName)
         {
             var pdfDoc = new Document(pdfFileName);
             var memoryStream = new MemoryStream();
             if (pdfDoc.Pages.Count > 0)
             {
-                x = (int) pdfDoc.Pages[1].Rect.Width;
-                y = (int) pdfDoc.Pages[1].Rect.Height;
-                var resolution = new Resolution(96);
+                //x = (int) pdfDoc.Pages[1].Rect.Width;
+                //y = (int) pdfDoc.Pages[1].Rect.Height;
                    
-                var pageSize = new PageSize(x,y);
+                //var pageSize = new PageSize(x,y);
 
-                var device = new BmpDevice(pageSize, resolution);
-               
+                var device = new BmpDevice(new Resolution(150));
                 device.Process(pdfDoc.Pages[1], memoryStream);
             }
-            else
-                x = y = 0;
 
             memoryStream.Seek(0, SeekOrigin.Begin);
 

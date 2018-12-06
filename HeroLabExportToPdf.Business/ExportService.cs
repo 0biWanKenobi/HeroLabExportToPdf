@@ -4,38 +4,32 @@ using Aspose.Pdf.Forms;
 
 namespace HeroLabExportToPdf.Business
 {
-    public static class PdfEdit
+    public class ExportService
     {
+        private static double _pageH, _pageW;
+       
+        public static Document PdfDoc { get; private set; }
 
-        private static Document PdfDoc { get; set; }
-        private static double PageH, PageW;
-
-        public static void Init(string pdfFileName)
+        public static void Init(string sourcePath, double pageH, double pageW)
         {
-            PdfDoc = new Document(pdfFileName);
-            PageH = PdfDoc.Pages[1].Rect.Height;
-            PageW = PdfDoc.Pages[1].Rect.Width;
-
-        }
-
-        private static double ToPoints(this double pixels)
-        {
-            return pixels * 72.0 / 96.0;
+            PdfDoc = new Document(sourcePath);
+            _pageH = pageH;
+            _pageW = pageW;
         }
 
         public static void AddField(double ulx, double uly, double width, double height, double winW, double winH)
         {
 
-            ulx = ulx * PageW / winW;
-            uly = uly * PageH / winH;
-            width = width * PageW / winW;
-            height = height * PageH / winH;
+            ulx = ulx * _pageW / winW;
+            uly = uly * _pageH / winH;
+            width = width * _pageW / winW;
+            height = height * _pageH / winH;
 
             
 
             var urx = ulx + width;
-            var lly = PageH - ( uly + height );
-            var ury = PageH - uly;
+            var lly = _pageH - ( uly + height );
+            var ury = _pageH - uly;
             // Create a field
             var textBoxField = new TextBoxField(PdfDoc.Pages[1], new Rectangle(ulx, lly, urx, ury))
             {
@@ -55,6 +49,8 @@ namespace HeroLabExportToPdf.Business
 
             
         }
+
+        
 
         public static void Save(string fileName)
         {

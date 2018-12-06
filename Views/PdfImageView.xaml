@@ -4,14 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:localroot="clr-namespace:HeroLabExportToPdf"
              xmlns:observers="clr-namespace:HeroLabExportToPdf.Observers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-   
-        <Image x:Name="Image" 
-               observers:SizeObserver.Observe="True"
-               observers:SizeObserver.ObservedWidth="{Binding Width, Mode=OneWayToSource}"
-               observers:SizeObserver.ObservedHeight="{Binding Height, Mode=OneWayToSource}"
-         />
+    <UserControl.Resources>
+        <localroot:BindingProxy x:Key="Proxy" Data="{Binding ElementName=CharacterSheet,Path=DataContext}" />
+    </UserControl.Resources>
+    <Image x:Name="Image" 
+           cal:Message.Attach="[Event SizeChanged] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action ScaleContent($imagesize)]"
+           cal:Action.TargetWithoutContext="{Binding Data, Source={StaticResource Proxy}}"
+           observers:SizeObserver.Observe="True"
+           observers:SizeObserver.ObservedWidth="{Binding Width, Mode=OneWayToSource}"
+           observers:SizeObserver.ObservedHeight="{Binding Height, Mode=OneWayToSource}"
+    />
     
 </UserControl>

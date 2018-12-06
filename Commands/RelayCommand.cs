@@ -3,10 +3,10 @@ using System.Windows.Input;
 
 namespace HeroLabExportToPdf.Commands
 {
-    public class RelayCommand : ICommand    
+    public class RelayCommand<T> : ICommand 
     {    
-        private readonly Action<object> execute;    
-        private readonly Func<object, bool> canExecute;    
+        private readonly Action<T> _execute;    
+        private readonly Func<T, bool> _canExecute;    
      
         public event EventHandler CanExecuteChanged    
         {    
@@ -14,20 +14,20 @@ namespace HeroLabExportToPdf.Commands
             remove => CommandManager.RequerySuggested -= value;
         }    
      
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)    
+        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)    
         {    
-            this.execute = execute;    
-            this.canExecute = canExecute;    
+            _execute = execute;    
+            _canExecute = canExecute;    
         }    
      
         public bool CanExecute(object parameter)    
         {    
-            return canExecute == null || canExecute(parameter);    
+            return _canExecute == null || _canExecute((T)parameter);    
         }    
      
         public void Execute(object parameter)    
         {    
-            execute(parameter);    
+            _execute((T)parameter);    
         }    
     }  
 }

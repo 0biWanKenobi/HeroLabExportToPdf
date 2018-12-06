@@ -1,25 +1,30 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
+using HeroLabExportToPdf.Commands;
+using HeroLabExportToPdf.Entities.Messages;
 
 namespace HeroLabExportToPdf.ViewModels
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="PropertyChangedBase" />
     /// <summary>
     /// Defines the view-model for a simple displayable rectangle.
     /// </summary>
-    public class RectangleViewModel : PropertyChangedBase
+    public class RectangleViewModel : PropertyChangedBase, IHandle<ImageResize>
     {
         #region Data Members
 
-        private static ObservableCollection<MenuItemViewModel> _rectangleContextMenu;
+        private ObservableCollection<MenuItemViewModel> _rectangleContextMenu;
 
-        private MenuItemViewModel _selectedItemViewModel;
+        private string _tooltip;
+
+        private bool _selected;
+
+        private ICommand _selectMenuItem;
 
         private double _scaleX, _scaleY;
-
-        private double _padding;
 
         /// <summary>
         /// The X coordinate of the location of the rectangle (in content coordinates).
@@ -53,26 +58,52 @@ namespace HeroLabExportToPdf.ViewModels
         /// </summary>
         private Point _connectorHotspot;
 
+        private string _text;
+
         #endregion Data Members
 
         #region Properties
 
-        public bool Selected { get; set; }
-
-        public MenuItemViewModel SelectedItemViewModel
+        public bool Selected
         {
-            get => _selectedItemViewModel;
+            get => _selected;
             set
             {
-                if (!Selected) return;
-                if(_selectedItemViewModel != null)
-                    _selectedItemViewModel.IsItemSet = false;
-                _selectedItemViewModel = value;
-                if(value != null)
-                    _selectedItemViewModel.IsItemSet = true;
-                NotifyOfPropertyChange(() => SelectedItemViewModel);
-            } }
+                if (_selected == value) return;
+                _selected = value;
+                _color.A = value ? (byte)255 : (byte)200;
+                NotifyOfPropertyChange(() => Selected);
+                NotifyOfPropertyChange(() => Color);
+            }
+        }
+       
+        
 
+        public double FontSize{get; private set; }
+
+        public ICommand SelectMenuItem
+        {
+            get => _selectMenuItem;
+            set
+            {
+                if(_selectMenuItem == value) return;
+                _selectMenuItem = value;
+                NotifyOfPropertyChange(() => SelectMenuItem);
+            }
+        }
+
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                if (_text == value) return;
+                _text = value;
+                NotifyOfPropertyChange(() => Text);
+            }
+        }
+
+        
         public ObservableCollection<MenuItemViewModel> RectangleContextMenu
         {
             get => _rectangleContextMenu;
@@ -84,43 +115,17 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public double ScaleX
+        public string Tooltip
         {
-            get => _scaleX;
+            get => _tooltip;
             set
             {
-                if (_scaleX.Equals(value)) return;
-                _scaleX = value;
-                _x = _x * _scaleX;
-                _width = _width * _scaleX;
-                NotifyOfPropertyChange(() => Width);
-                NotifyOfPropertyChange(() => X);
+                if (_tooltip == value) return;
+                _tooltip = value;
+                NotifyOfPropertyChange(() => Tooltip);
             }
         }
-        public double ScaleY
-        {
-            get => _scaleY;
-            set
-            {
-                if (_scaleY.Equals(value)) return;
-                _scaleY = value;
-                _y = _y * _scaleY;
-                _height = _height * _scaleY;
-                NotifyOfPropertyChange(() => Height);
-                NotifyOfPropertyChange(() => Y);
-            }
-        }
-
-        public double Padding
-        {
-            get => _padding;
-            set
-            {
-                if (_padding.Equals(value)) return;
-                _padding = value;
-            }
-        }
-
+        
         /// <summary>
         /// The X coordinate of the location of the rectangle (in content coordinates).
         /// </summary>
@@ -227,59 +232,44 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        
-      
+        public bool CanDoRepositioning { get; set; }
+
         #endregion
 
-
-        static RectangleViewModel()
+        private double ScaleX
         {
-            _rectangleContextMenu = new ObservableCollection<MenuItemViewModel>()
+            set
             {
-                new MenuItemViewModel{Text = "Name"},
-                new MenuItemViewModel{Text = "Class"},
-                new MenuItemViewModel{Text = "Level"},
-                new MenuItemViewModel{Text = "Stats"},
-                new MenuItemViewModel{Text = "Backpack"},
-                new MenuItemViewModel{Text = "Armor", MenuItems = new ObservableCollection<MenuItemViewModel>
-                {
-                    new MenuItemViewModel{Text = "Name"},
-                    new MenuItemViewModel{Text = "Type"},
-                    new MenuItemViewModel{Text = "AC Bonus"},
-                    new MenuItemViewModel{Text = "Max Dex"},
-                    new MenuItemViewModel{Text = "Check Penalty"},
-                    new MenuItemViewModel{Text = "Spell Fail"},
-                    new MenuItemViewModel{Text = "Speed"},
-                    new MenuItemViewModel{Text = "Weight"}
-                }},
-                new MenuItemViewModel{Text = "Weapon", MenuItems = new ObservableCollection<MenuItemViewModel>
-                {
-                    new MenuItemViewModel{Text = "Name"},
-                    new MenuItemViewModel{Text = "Type"},
-                    new MenuItemViewModel{Text = "Range"},
-                    new MenuItemViewModel{Text = "Ammunition"},
-                    new MenuItemViewModel{Text = "Damage"},
-                    new MenuItemViewModel{Text = "Attack Bonus"},
-                    new MenuItemViewModel{Text = "Critical"},
-                }},
-                new MenuItemViewModel(){Text = "Abilities", MenuItems = new ObservableCollection<MenuItemViewModel>
-                {
-                    new MenuItemViewModel{Text = "Ability1"},
-                    new MenuItemViewModel{Text = "Ability2"}
-                }},
-            };
+                if (_scaleX.Equals(value)) return;
+                _scaleX = value;
+                _x = _x * _scaleX;
+                _width = _width * _scaleX;
+                NotifyOfPropertyChange(() => Width);
+                NotifyOfPropertyChange(() => X);
+            }
+        }
+        private double ScaleY
+        {
+            set
+            {
+                if (_scaleY.Equals(value)) return;
+                _scaleY = value;
+                _y = _y * _scaleY;
+                _height = _height * _scaleY;
+                NotifyOfPropertyChange(() => Height);
+                NotifyOfPropertyChange(() => Y);
+            }
         }
 
-        public RectangleViewModel()
-        {
-        }
 
-        public RectangleViewModel(double x, double y, double width, double height, Color color)
+        
+        private double _initialDragX, _initialDragY;
+       
+        public RectangleViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, double x, double y,
+            double width, double height, Color color) 
         {
-            _padding = 3.0;
-            var doublep = _padding * 2.0;
-            _x = x - doublep;
-            _y = y - doublep;
+            _x = x;
+            _y = y;
             _width = width;
             _height = height;
             _color = color;
@@ -287,30 +277,49 @@ namespace HeroLabExportToPdf.ViewModels
             _scaleY = 1;
 
 
-
-            foreach (var menuItemViewModel in RectangleContextMenu)
-            {
-                menuItemViewModel.CallBack += OnOptionSelected;
-            }
+            CanDoRepositioning = false;
+            eventAggregator.Subscribe(this);
+            SelectMenuItem = new RelayCommand<MenuItemViewModel>(UpdateRectangle, a => true);
+            _rectangleContextMenu = menuViewModel.Items;
         }
 
-        public void ResetSelectedItem()
+        public bool CanInitRepositioning => true;
+        public void InitRepositioning(double x, double y)
         {
-            if (SelectedItemViewModel != null)
-            {
-                SelectedItemViewModel.IsItemSet = !SelectedItemViewModel.IsItemSet;
-            }
+            _initialDragX = x;
+            _initialDragY = y;
+            CanDoRepositioning = true;
         }
 
-        public void MenuOpened()
+        public void DoRepositioning(double x, double y)
         {
-            Selected = true;
+            X += x -_initialDragX;
+            Y += y - _initialDragY;
+          
         }
 
-        public void OnOptionSelected(MenuItemViewModel selectedItemViewModel)
+        public bool CanEndRepositioning => true;
+        public void EndRepositioning()
         {
-            if(Selected)
-                SelectedItemViewModel = selectedItemViewModel;
+            CanDoRepositioning = false;
+        }
+
+        public void Handle(ImageResize message)
+        {
+            ScaleX = message.ScaleX;
+            ScaleY = message.ScaleY;
+        }
+        
+
+        public void UpdateRectangle(MenuItemViewModel selectedMenuOption)
+        {
+            Tooltip = selectedMenuOption.Text;
+            Text = selectedMenuOption.Value;
+        }
+
+        public void FontSizeChange(double scale)
+        {
+            FontSize = 12 * scale;
         }
     }
 }
