@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Caliburn.Micro;
 using HeroLabExportToPdf.Business;
@@ -69,6 +70,27 @@ namespace HeroLabExportToPdf
                         var width = image.ActualWidth;
                         var height = image.ActualHeight;
                         return  (width: width, height: height); 
+                    }
+                    return null;
+                });
+
+            MessageBinder.SpecialValues
+                .Add("$delta", (ctx) =>
+                {
+                    if(ctx.Source is Thumb thumb && ctx.EventArgs is DragDeltaEventArgs args)
+                    {
+                        var istop = thumb.VerticalAlignment == VerticalAlignment.Top;
+                        var isleft = thumb.HorizontalAlignment == HorizontalAlignment.Left;
+                        var dirV = istop ? 1 : -1;
+                        var dirH = isleft ? 1 : -1;
+                        return (
+                              deltah: Math.Min(dirH*args.HorizontalChange, thumb.ActualWidth  - thumb.MinWidth )
+                            , deltav: Math.Min(dirV*args.VerticalChange,  thumb.ActualHeight - thumb.MinHeight)
+                            , istop:  istop
+                            , isbottom: thumb.VerticalAlignment == VerticalAlignment.Bottom
+                            , isleft: isleft
+                            , isright: thumb.HorizontalAlignment == HorizontalAlignment.Right
+                                     );
                     }
                     return null;
                 });

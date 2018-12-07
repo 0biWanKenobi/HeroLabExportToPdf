@@ -60,7 +60,7 @@ namespace HeroLabExportToPdf.ViewModels
         {
             foreach (var rectangle in _characterSheet.Rectangles)
             {
-                PdfEdit.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.FontSize);
+                PdfEdit.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.Tooltip, rectangle.FontSize);
             }
             
             if(_saveFileService.DetermineFile())

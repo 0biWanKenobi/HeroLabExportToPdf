@@ -317,6 +317,20 @@ namespace HeroLabExportToPdf.ViewModels
             Text = selectedMenuOption.Value;
         }
 
+
+        public void Resize((double deltah, double deltav, bool istop, bool isbottom, bool isleft, bool isright) delta)
+        {
+            if (delta.istop)
+                Y += delta.deltav;
+            if(delta.istop || delta.isbottom)
+            Height -= delta.deltav;
+
+            if (delta.isleft)
+                X += delta.deltah;
+            if(delta.isleft || delta.isright)
+            Width -= delta.deltah;
+        }
+
         public void FontSizeChange(double scale)
         {
             FontSize = 12 * scale;

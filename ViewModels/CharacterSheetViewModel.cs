@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
+using HeroLabExportToPdf.Business;
 using HeroLabExportToPdf.Entities.Messages;
 using HeroLabExportToPdf.Services;
 
@@ -102,6 +103,7 @@ namespace HeroLabExportToPdf.ViewModels
             {
                 while(_selectedRectangle != null)
                 {
+                    PdfEdit.RemoveField(_selectedRectangle.Tooltip);
                     Rectangles.Remove(_selectedRectangle);
                 }
             }

@@ -1,4 +1,5 @@
-﻿using Aspose.Pdf;
+﻿using System;
+using Aspose.Pdf;
 using Aspose.Pdf.Annotations;
 using Aspose.Pdf.Forms;
 
@@ -19,10 +20,23 @@ namespace HeroLabExportToPdf.Business
 
         }
 
+        public static void RemoveField(string fieldName)
+        {
+            try
+            {
+                PdfDoc.Form.Delete(fieldName);
+            }
+            catch (Exception)
+            {
+                // ignored, a field without a name cannot be deleted
+                // and the same is for a field that does not exist,
+                // but it's not an issue if the operation fails silently
+            }
+        }
        
 
         public static void AddField(double ulx, double uly, double width, double height, double winW, double winH,
-            string text, double fontSize)
+            string text, string label, double fontSize)
         {
             var scaleW = _pageW / winW;
             var scaleH = _pageH / winH;
@@ -40,9 +54,10 @@ namespace HeroLabExportToPdf.Business
             // Create a field
             var textBoxField = new TextBoxField(PdfDoc.Pages[1], new Rectangle(ulx, lly, urx, ury))
             {
-                PartialName = $"textbox{PdfDoc.Form.Fields.Length}", Value = text, Color = Color.Transparent, DefaultAppearance = { FontSize = fontSize}
+                PartialName = label, Value = text, Color = Color.Transparent, DefaultAppearance = { FontSize = fontSize}
                 , Margin = new MarginInfo(5,0,5,0)
                 , Characteristics = { Border = System.Drawing.Color.Transparent}
+                , Name = label
             };
 
             
