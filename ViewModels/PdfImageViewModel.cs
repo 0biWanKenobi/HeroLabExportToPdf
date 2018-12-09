@@ -9,9 +9,9 @@ namespace HeroLabExportToPdf.ViewModels
        
         private double _width, _height, _scaleX, _scaleY;
         private BitmapImage _image;
-        private readonly IImageService _imageService;
+        private readonly IPdfService _pdfService;
 
-        public BitmapImage Image => _image ?? (_image = _imageService.Create());
+        public BitmapImage Image => _image ?? (_image = _pdfService.GetImagePreview());
 
         public double Width
         {
@@ -60,9 +60,9 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public PdfImageViewModel(IImageService imageService)
+        public PdfImageViewModel(IPdfService pdfService)
         {
-            _imageService = imageService;
+            _pdfService = pdfService;
             
         }
         

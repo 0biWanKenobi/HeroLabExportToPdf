@@ -8,7 +8,6 @@
              Tag="{Binding DragSelectionCanvas}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             
 >
     <UserControl.Resources>
         <Style x:Key="ListBoxStyle">
@@ -65,6 +64,7 @@
                             >
                                 <Setter Property="Canvas.Left" Value="{Binding X}"/>
                                 <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWayToSource}"></Setter>
                                 <Setter Property="Padding" Value="0"/>
                                 <Setter Property="BorderThickness" Value="0"></Setter>
                             </Style>

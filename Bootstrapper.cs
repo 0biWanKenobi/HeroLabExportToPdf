@@ -39,7 +39,7 @@ namespace HeroLabExportToPdf
             _container = new SimpleContainer();
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<ICoordinateTranslationService, CoordinatesTranslationService>();
-            _container.Singleton<IImageService, ImageService>();
+            _container.Singleton<IPdfService, PdfService>();
             _container.Singleton<MenuViewModel>("StaticMenuViewModel");
 
             _container.Handler<DrawingCanvasViewModel>( c => new DrawingCanvasViewModel(c.GetInstance<IEventAggregator>()));
@@ -51,9 +51,8 @@ namespace HeroLabExportToPdf
             _container.PerRequest<PdfImageViewModel>();
             _container.PerRequest<MainViewModel>();
             
-            _container.Handler<RectangleFactory>(c => new RectangleFactory(
+            _container.Handler<FieldFactory>(c => new FieldFactory(
                 () => c.GetInstance<MenuViewModel>("StaticMenuViewModel")
-                , c.GetInstance<ICoordinateTranslationService>()
                 , c.GetInstance<IEventAggregator>()
                 )
             );

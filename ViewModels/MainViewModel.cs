@@ -1,6 +1,5 @@
 ﻿using System;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Business;
 using HeroLabExportToPdf.Services;
 
 namespace HeroLabExportToPdf.ViewModels
@@ -15,11 +14,13 @@ namespace HeroLabExportToPdf.ViewModels
         private readonly IOpenFileService _openFileService;
         private readonly ISaveFileService _saveFileService;
         private readonly CharacterSheetViewModel _characterSheet;
+        private readonly IPdfService _pdfService;
 
-        public MainViewModel(IOpenFileService openFileService, ISaveFileService saveFileService, CharacterSheetViewModel characterSheet)
+        public MainViewModel(IOpenFileService openFileService, ISaveFileService saveFileService, IPdfService pdfService, CharacterSheetViewModel characterSheet)
         {
             _openFileService = openFileService;
             _saveFileService = saveFileService;
+            _pdfService = pdfService;
             _saveFileService.Filter = "Pdf File (*.pdf)|*.pdf";
             _saveFileService.Title = "Salva Scheda Personaggio";
             _saveFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -50,8 +51,7 @@ namespace HeroLabExportToPdf.ViewModels
             var fileChosen = _openFileService.DetermineFile();
             if (fileChosen)
             {
-                PdfEdit.Init(_openFileService.File.FullName);
-                ImageService.FilePath = _openFileService.File.FullName;
+                _pdfService.Init(_openFileService.File.FullName);
                 ActivateItem(_characterSheet);
             }
         }
@@ -60,11 +60,11 @@ namespace HeroLabExportToPdf.ViewModels
         {
             foreach (var rectangle in _characterSheet.Rectangles)
             {
-                PdfEdit.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.Tooltip, rectangle.FontSize);
+                _pdfService.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.Tooltip, rectangle.FontSize);
             }
             
             if(_saveFileService.DetermineFile())
-                PdfEdit.Save(_saveFileService.File.FullName);
+                _pdfService.Save(_saveFileService.File.FullName);
         }
     }
 }

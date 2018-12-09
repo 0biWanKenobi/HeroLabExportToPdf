@@ -3,11 +3,11 @@
 namespace HeroLabExportToPdf.Views
 {
     /// <summary>
-    /// Interaction logic for RectangleView.xaml
+    /// Interaction logic for FieldView.xaml
     /// </summary>
-    public partial class RectangleView : UserControl
+    public partial class FieldView : UserControl
     {
-        public RectangleView()
+        public FieldView()
         {
             InitializeComponent();
         }

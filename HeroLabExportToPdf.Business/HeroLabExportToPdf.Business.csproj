@@ -51,8 +51,6 @@
     <Compile Include="ExportService.cs" />
     <Compile Include="ICharacterService.cs" />
     <Compile Include="IExportService.cs" />
-    <Compile Include="PdfConvert.cs" />
-    <Compile Include="PdfEdit.cs" />
     <Compile Include="ProfileLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

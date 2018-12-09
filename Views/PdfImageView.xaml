@@ -12,7 +12,7 @@
         <localroot:BindingProxy x:Key="Proxy" Data="{Binding ElementName=CharacterSheet,Path=DataContext}" />
     </UserControl.Resources>
     <Image x:Name="Image" 
-           cal:Message.Attach="[Event SizeChanged] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action ScaleContent($imagesize)]"
+           cal:Message.Attach="[Event SizeChanged] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action UpdateRectangles()]"
            cal:Action.TargetWithoutContext="{Binding Data, Source={StaticResource Proxy}}"
            observers:SizeObserver.Observe="True"
            observers:SizeObserver.ObservedWidth="{Binding Width, Mode=OneWayToSource}"

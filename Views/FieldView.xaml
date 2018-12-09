@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HeroLabExportToPdf.Views.RectangleView"
+﻿<UserControl x:Class="HeroLabExportToPdf.Views.FieldView"
              x:Name="RectangleControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -55,10 +55,10 @@
                 Text="{Binding Text}" 
                 Background="Transparent"
                 ToolTip="{Binding Text}"
-                FontFamily="Helvetica"
+                FontFamily="{Binding FontFamily}"
                 VerticalAlignment="Center"
                 Foreground="White"
-                Margin="5,2"
+                Margin="2,2"
                 
             />
         </Viewbox>
@@ -66,31 +66,62 @@
     </Grid>
         </ControlTemplate>
 
+        
+        <Style x:Key="ThumbStyle"
+               TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Rectangle 
+                            Fill="#813fbf"  
+                            Height="{Binding Height, RelativeSource={RelativeSource TemplatedParent}}" 
+                            Width="{Binding Width, RelativeSource={RelativeSource TemplatedParent}}"
+                            Stroke="#af85d6"
+                            StrokeThickness="1.5"
+                            StrokeEndLineCap="Round"
+                            StrokeStartLineCap="Round"
+                        />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ThumbCircleStyle"
+               TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Ellipse Width="7" Height="7" StrokeThickness="1.5" Fill="#813fbf" Stroke="#af85d6"></Ellipse>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- ResizeDecorator Template -->
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
-                <Thumb Height="3" Cursor="SizeNS" Margin="0 -4 0 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" 
+                <Thumb Height="5" Cursor="SizeNS" Margin="4 -6 4 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Style="{StaticResource ThumbStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"
                 />
-                <Thumb Width="3" Cursor="SizeWE" Margin="-4 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                <Thumb Width="5" Cursor="SizeWE" Margin="-6 4 0 4" VerticalAlignment="Stretch" HorizontalAlignment="Left" Style="{StaticResource ThumbStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"
                 />
-                <Thumb Width="3" Cursor="SizeWE" Margin="0 0 -4 0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
+                <Thumb Width="5" Cursor="SizeWE" Margin="0 4 -6 4" VerticalAlignment="Stretch" HorizontalAlignment="Right" Style="{StaticResource ThumbStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"
                 />
-                <Thumb Height="3" Cursor="SizeNS" Margin="0 0 0 -4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                <Thumb Height="5" Cursor="SizeNS" Margin="4 0 4 -6" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Style="{StaticResource ThumbStyle}"  
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"       
                 />
-                <Thumb Width="7" Height="7" Cursor="SizeNWSE" Margin="-6 -6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left"
+                <Thumb Width="7" Height="7" Cursor="SizeNWSE" Margin="-6 -6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ThumbCircleStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"       
                 />
-                <Thumb Width="7" Height="7" Cursor="SizeNESW" Margin="0 -6 -6 0" VerticalAlignment="Top" HorizontalAlignment="Right"
+                <Thumb Width="7" Height="7" Cursor="SizeNESW" Margin="0 -6 -6 0" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ThumbCircleStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"       
                 />
-                <Thumb Width="7" Height="7" Cursor="SizeNESW" Margin="-6 0 0 -6" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                <Thumb Width="7" Height="7" Cursor="SizeNESW" Margin="-6 0 0 -6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ThumbCircleStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"       
                 />
-                <Thumb Width="7" Height="7" Cursor="SizeNWSE" Margin="0 0 -6 -6" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                <Thumb Width="7" Height="7" Cursor="SizeNWSE" Margin="0 0 -6 -6" VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ThumbCircleStyle}"
                        cal:Message.Attach="[Event DragDelta] = [Action Resize($delta)]"
                 />
             </Grid>

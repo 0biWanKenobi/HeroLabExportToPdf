@@ -41,6 +41,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.PDF, Version=18.4.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Aspose.PDF for .Net v18.4\net4.0\Aspose.PDF.dll</HintPath>
+    </Reference>
     <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
     </Reference>
@@ -58,6 +62,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -87,12 +92,12 @@
     <Compile Include="Services\CoordinateTranslationService.cs" />
     <Compile Include="Services\ICoordinateTranslationService.cs" />
     <Compile Include="Services\IFileService.cs" />
-    <Compile Include="Services\IImageService.cs" />
-    <Compile Include="Services\ImageService.cs" />
+    <Compile Include="Services\IPdfService.cs" />
+    <Compile Include="Services\PdfService.cs" />
     <Compile Include="Services\IOpenFileService.cs" />
     <Compile Include="Services\ISaveFileService.cs" />
     <Compile Include="Services\OpenFileService.cs" />
-    <Compile Include="Services\RectangleFactory.cs" />
+    <Compile Include="Services\FieldFactory.cs" />
     <Compile Include="Services\SaveFileService.cs" />
     <Compile Include="ViewModels\CharacterSheetViewModel.cs" />
     <Compile Include="ViewModels\DrawingCanvasViewModel.cs" />
@@ -109,8 +114,8 @@
     <Compile Include="Views\PdfImageView.xaml.cs">
       <DependentUpon>PdfImageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RectangleView.xaml.cs">
-      <DependentUpon>RectangleView.xaml</DependentUpon>
+    <Compile Include="Views\FieldView.xaml.cs">
+      <DependentUpon>FieldView.xaml</DependentUpon>
     </Compile>
     <Page Include="HelpText.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -144,7 +149,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RectangleView.xaml">
+    <Page Include="Views\FieldView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -169,7 +174,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ViewModels\RectangleViewModel.cs" />
+    <Compile Include="ViewModels\FieldViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

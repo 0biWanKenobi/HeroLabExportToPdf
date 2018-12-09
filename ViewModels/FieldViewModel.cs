@@ -12,7 +12,7 @@ namespace HeroLabExportToPdf.ViewModels
     /// <summary>
     /// Defines the view-model for a simple displayable rectangle.
     /// </summary>
-    public class RectangleViewModel : PropertyChangedBase, IHandle<ImageResize>
+    public class FieldViewModel : PropertyChangedBase, IHandle<ImageResize>
     {
         #region Data Members
 
@@ -77,7 +77,7 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
        
-        
+        public string FontFamily { get; set; }
 
         public double FontSize{get; private set; }
 
@@ -94,7 +94,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         public string Text
         {
-            get => _text;
+            get => _text == "Yes" && Type == 1 ? "\u2713" : _text;
             set
             {
                 if (_text == value) return;
@@ -261,11 +261,12 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-
+        private int Type { get; set; }
         
         private double _initialDragX, _initialDragY;
        
-        public RectangleViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, double x, double y,
+        public FieldViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, int type, string text,
+            string label, string fontFamily, double x, double y,
             double width, double height, Color color) 
         {
             _x = x;
@@ -275,6 +276,10 @@ namespace HeroLabExportToPdf.ViewModels
             _color = color;
             _scaleX = 1;
             _scaleY = 1;
+            Type = type;
+            Text = text;
+            Tooltip = label;
+            FontFamily = fontFamily;
 
 
             CanDoRepositioning = false;

@@ -13,14 +13,15 @@ namespace HeroLabExportToPdf.ViewModels
     {
 
         #region injected parameters
-        private readonly RectangleFactory _rectangleFactory;
+        private readonly FieldFactory _fieldFactory;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IPdfService _pdfService;
 
         #endregion
 
 
         #region bindings helpers
-        private RectangleViewModel _selectedRectangle;
+        private FieldViewModel _selectedField;
         private double _rectanglesWidth, _rectanglesHeight;
         private DrawingCanvasViewModel _dragSelectionCanvas;
         #endregion
@@ -65,19 +66,19 @@ namespace HeroLabExportToPdf.ViewModels
         /// <summary>
         /// The list of rectangles that is displayed in the ListBox.
         /// </summary>
-        public ObservableCollection<RectangleViewModel> Rectangles { get; } = new ObservableCollection<RectangleViewModel>();
+        public ObservableCollection<FieldViewModel> Rectangles { get; } = new ObservableCollection<FieldViewModel>();
 
-        public RectangleViewModel SelectedRectangle
+        public FieldViewModel SelectedField
         {
-            get => _selectedRectangle;
+            get => _selectedField;
             set
             {
-                if(_selectedRectangle != null)
-                    _selectedRectangle.Selected = false;
-                _selectedRectangle = value;
+                if(_selectedField != null)
+                    _selectedField.Selected = false;
+                _selectedField = value;
                 if(value != null)
-                _selectedRectangle.Selected = true;
-                NotifyOfPropertyChange(() => SelectedRectangle);
+                _selectedField.Selected = true;
+                NotifyOfPropertyChange(() => SelectedField);
             }
         }
 
@@ -86,25 +87,39 @@ namespace HeroLabExportToPdf.ViewModels
         private readonly SynchronizationContext _context;
 
         public CharacterSheetViewModel(PdfImageViewModel image, DrawingCanvasViewModel drawingCanvasViewModel,
-            RectangleFactory rectangleFactory, IEventAggregator eventAggregator)
+            FieldFactory fieldFactory, IPdfService pdfService, IEventAggregator eventAggregator)
         {
             PdfImage = image;
-            _rectangleFactory = rectangleFactory;
+            _fieldFactory = fieldFactory;
+            _pdfService = pdfService;
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DragSelectionCanvas = drawingCanvasViewModel;
             _context = SynchronizationContext.Current;
+
+
+            
         }
 
+        public void UpdateRectangles()
+        {
+            foreach ((string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
+            {
+                var r = _fieldFactory.Create(this, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
+                    Color.FromArgb(200, 129, 63, 191));
+                
+                Rectangles.Add(r);
+            }
+        }
 
         public void DeleteRectangle(bool deleted)
         {
             if (deleted)
             {
-                while(_selectedRectangle != null)
+                while(_selectedField != null)
                 {
-                    PdfEdit.RemoveField(_selectedRectangle.Tooltip);
-                    Rectangles.Remove(_selectedRectangle);
+                    _pdfService.RemoveField(_selectedField.Tooltip);
+                    Rectangles.Remove(_selectedField);
                 }
             }
         }
@@ -125,7 +140,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void Handle(CanvasDrawn message)
         {
-            var newField = _rectangleFactory.Create(this, message.X, message.Y, message.Width, message.Height,
+            var newField = _fieldFactory.Create(this, 0, message.X, message.Y, message.Width, message.Height,
                 Color.FromArgb(200, 129, 63, 191));
             _context.Send(c =>
                     Rectangles.Add(newField)
