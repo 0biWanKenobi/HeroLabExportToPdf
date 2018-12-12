@@ -7,7 +7,8 @@ This project is currently in pre beta status of development.
 
 ### What works:
 
-
+ - Load pdf character sheet ( only first page)
+ - Multi page character sheet support
  - Display existing form fields (text and checkbox)
  - Add, delete, resize, move form fields
  - Dynamic font size in text fields
@@ -15,13 +16,11 @@ This project is currently in pre beta status of development.
 
 ### What partially works:
 
- - Load pdf character sheet ( only first page)
  - Assign value to field ( incomplete context menu, only a couple options do something)
 
 ### What will be added:
 
 - Save form fields position, size, and character sheet attribute as a template
-- Multi page character sheet support
 - Load and work with images instead of pdf files
 - Pdf fields recognition (with naming convention) to allow autofill
 - Unrecognized fields hint (different color highlight)
