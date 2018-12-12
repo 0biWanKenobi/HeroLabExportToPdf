@@ -7,7 +7,7 @@ This project is currently in pre beta status of development.
 
 ### What works:
 
- - Load pdf character sheet ( only first page)
+ - Load pdf character sheet
  - Multi page character sheet support
  - Display existing form fields (text and checkbox)
  - Add, delete, resize, move form fields
