@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Business;
 using HeroLabExportToPdf.Entities.Messages;
 using HeroLabExportToPdf.Services;
 
@@ -22,6 +21,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         #region bindings helpers
         private FieldViewModel _selectedField;
+        private int _currentPageIndex;
         private double _rectanglesWidth, _rectanglesHeight;
         private DrawingCanvasViewModel _dragSelectionCanvas;
         #endregion
@@ -29,6 +29,18 @@ namespace HeroLabExportToPdf.ViewModels
         #region bindings
 
         public PdfImageViewModel PdfImage { get; set; }
+
+        public int CurrentPageIndex { 
+            get => _currentPageIndex;
+            set
+            {
+                if (_currentPageIndex == value) return;
+                _currentPageIndex = value;
+                NotifyOfPropertyChange(() => CurrentPageIndex);
+                NotifyOfPropertyChange(() => CanNextPage);
+                NotifyOfPropertyChange(() => CanPrevPage);
+            }
+        }
 
         public double RectanglesWidth
         {
@@ -84,28 +96,45 @@ namespace HeroLabExportToPdf.ViewModels
 
 #endregion
 
-        private readonly SynchronizationContext _context;
 
-        public CharacterSheetViewModel(PdfImageViewModel image, DrawingCanvasViewModel drawingCanvasViewModel,
+        #region guards
+
+        public bool CanPrevPage => CurrentPageIndex > 1;
+        public bool CanNextPage => CurrentPageIndex < _pdfService.PageCount;
+
+        #endregion
+
+        private readonly SynchronizationContext _context;
+        
+
+        public CharacterSheetViewModel(DrawingCanvasViewModel drawingCanvasViewModel,
             FieldFactory fieldFactory, IPdfService pdfService, IEventAggregator eventAggregator)
         {
-            PdfImage = image;
-            _fieldFactory = fieldFactory;
             _pdfService = pdfService;
+            PdfImage = new PdfImageViewModel();
+            _fieldFactory = fieldFactory;
+            
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DragSelectionCanvas = drawingCanvasViewModel;
             _context = SynchronizationContext.Current;
+            CurrentPageIndex = 1;
 
 
-            
+
+        }
+
+        public void SetSheetPreview()
+        {
+            PdfImage.Image = _pdfService.GetImagePreview(1);
+            NotifyOfPropertyChange(() => CanNextPage);
         }
 
         public void UpdateRectangles()
         {
-            foreach ((string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
+            foreach ((int pageIndex, string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
             {
-                var r = _fieldFactory.Create(this, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
+                var r = _fieldFactory.Create(this, field.pageIndex, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
                     Color.FromArgb(200, 129, 63, 191));
                 
                 Rectangles.Add(r);
@@ -114,16 +143,13 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void DeleteRectangle(bool deleted)
         {
-            if (deleted)
+            if (!deleted) return;
+            while(_selectedField != null)
             {
-                while(_selectedField != null)
-                {
-                    _pdfService.RemoveField(_selectedField.Tooltip);
-                    Rectangles.Remove(_selectedField);
-                }
+                _pdfService.RemoveField(_selectedField.Tooltip);
+                Rectangles.Remove(_selectedField);
             }
         }
-
 
         public bool CanScaleContent => true;
         public void ScaleContent((double width, double height) imageSize)
@@ -140,12 +166,27 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void Handle(CanvasDrawn message)
         {
-            var newField = _fieldFactory.Create(this, 0, message.X, message.Y, message.Width, message.Height,
+            var newField = _fieldFactory.Create(this, CurrentPageIndex, 0, message.X, message.Y, message.Width, message.Height,
                 Color.FromArgb(200, 129, 63, 191));
             _context.Send(c =>
                     Rectangles.Add(newField)
                 , null);
 
         }
+
+        
+
+        public void PrevPage()
+        {
+            CurrentPageIndex--;
+            PdfImage.Image = _pdfService.GetImagePreview(CurrentPageIndex);
+        }
+
+        public void NextPage()
+        {
+            CurrentPageIndex++;
+            PdfImage.Image = _pdfService.GetImagePreview(CurrentPageIndex);
+        }
+
     }
 }

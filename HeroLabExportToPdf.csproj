@@ -88,6 +88,7 @@
     <Compile Include="Caliburn\Micro\Logging\DebugLogger.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\PageToVisibilityConverter.cs" />
     <Compile Include="Services\BaseFileService.cs" />
     <Compile Include="Services\CoordinateTranslationService.cs" />
     <Compile Include="Services\ICoordinateTranslationService.cs" />

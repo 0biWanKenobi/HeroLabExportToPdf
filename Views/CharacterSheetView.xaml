@@ -4,12 +4,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cnv="clr-namespace:HeroLabExportToPdf.Converters"
              xmlns:cal="http://www.caliburnproject.org"
-             Tag="{Binding DragSelectionCanvas}"
+             Tag="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
 >
     <UserControl.Resources>
+        <cnv:PageToVisibilityConverter x:Key="PageToVisibilityConverter"></cnv:PageToVisibilityConverter>
         <Style x:Key="ListBoxStyle">
             <Setter>
                 <Setter.Property>ListBox.Template</Setter.Property>
@@ -33,10 +35,14 @@
     </UserControl.Resources>
    
         <Grid>
-            <ScrollViewer>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0">
                 <Grid
                     Margin="20,0"
-                    cal:Action.TargetWithoutContext="{Binding Path=Tag, ElementName=CharacterSheet, PresentationTraceSources.TraceLevel=High}"
+                    cal:Action.TargetWithoutContext="{Binding Path=Tag.DragSelectionCanvas, ElementName=CharacterSheet, PresentationTraceSources.TraceLevel=High}"
                     cal:Message.Attach="[Event MouseLeftButtonDown] = [Action InitCanvasDrawing($mousex, $mousey)];
                                  [Event MouseMove] = [Action CanvasDrawing($mousex, $mousey)];
                                  [Event MouseLeftButtonUp] = [Action StopDrawing()]"
@@ -67,6 +73,15 @@
                                 <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWayToSource}"></Setter>
                                 <Setter Property="Padding" Value="0"/>
                                 <Setter Property="BorderThickness" Value="0"></Setter>
+                                <Setter Property="Visibility">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource PageToVisibilityConverter}">
+                                            <Binding Path="Tag.CurrentPageIndex"  ElementName="CharacterSheet"></Binding>
+                                            <Binding Path="Page"></Binding>
+                                        </MultiBinding>
+                                        
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>
@@ -77,10 +92,23 @@
                 
             </ScrollViewer>
             
-           
             
-
-            
+            <DockPanel Grid.Row="1" DockPanel.Dock="Bottom"  VerticalAlignment="Center" Background="White" Height="50">
+                <Border BorderBrush="Gainsboro" BorderThickness="0,0,2,2">
+                   
+                    <Border BorderBrush="Gray" BorderThickness="2,2,0,0">
+                        
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Button x:Name="PrevPage" Content="&#9664;" Width="60" Height="30"></Button>
+                            <Border Height="30" BorderThickness="1" BorderBrush="{Binding BorderBrush, ElementName=PrevPage}"  Margin="5,0">
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" x:Name="CurrentPageIndex" Width="50"></TextBlock>
+                            </Border>
+                            <Button x:Name="NextPage" Content="&#9654;" Width="60" Height="30"></Button>
+                        </StackPanel>
+                    </Border>
+                    
+                </Border>
+            </DockPanel>
         </Grid>
     
 

@@ -16,6 +16,8 @@ namespace HeroLabExportToPdf.ViewModels
     {
         #region Data Members
 
+        private int _page;
+
         private ObservableCollection<MenuItemViewModel> _rectangleContextMenu;
 
         private string _tooltip;
@@ -63,6 +65,18 @@ namespace HeroLabExportToPdf.ViewModels
         #endregion Data Members
 
         #region Properties
+
+        public int Page
+        {
+            get => _page;
+            set
+            {
+                if (_page == value) return;
+                _page = value;
+                NotifyOfPropertyChange(() => Page);
+            }
+        }
+
 
         public bool Selected
         {
@@ -236,6 +250,8 @@ namespace HeroLabExportToPdf.ViewModels
 
         #endregion
 
+
+        #region private properties
         private double ScaleX
         {
             set
@@ -260,12 +276,15 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Y);
             }
         }
-
         private int Type { get; set; }
         
+
         private double _initialDragX, _initialDragY;
+        
+
+        #endregion
        
-        public FieldViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, int type, string text,
+        public FieldViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, int pageIndex, int type, string text,
             string label, string fontFamily, double x, double y,
             double width, double height, Color color) 
         {
@@ -276,6 +295,7 @@ namespace HeroLabExportToPdf.ViewModels
             _color = color;
             _scaleX = 1;
             _scaleY = 1;
+            Page = pageIndex;
             Type = type;
             Text = text;
             Tooltip = label;

@@ -1,6 +1,5 @@
 ﻿using System.Windows.Media.Imaging;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Services;
 
 namespace HeroLabExportToPdf.ViewModels
 {
@@ -9,9 +8,16 @@ namespace HeroLabExportToPdf.ViewModels
        
         private double _width, _height, _scaleX, _scaleY;
         private BitmapImage _image;
-        private readonly IPdfService _pdfService;
 
-        public BitmapImage Image => _image ?? (_image = _pdfService.GetImagePreview());
+        public BitmapImage Image
+        {
+            get => _image;
+            set  {
+            if (_image == value) return;
+                _image = value;
+                NotifyOfPropertyChange(() => Image);
+            }
+        }  
 
         public double Width
         {
@@ -59,12 +65,5 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => ScaleY);
             }
         }
-
-        public PdfImageViewModel(IPdfService pdfService)
-        {
-            _pdfService = pdfService;
-            
-        }
-        
     }
 }

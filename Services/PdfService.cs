@@ -21,12 +21,16 @@ namespace HeroLabExportToPdf.Services
         }
 
 
+        
+
         private static Document PdfDoc { get; set; }
+        public int PageCount  => PdfDoc?.Pages.Count ?? 0;
+
         private static List<Field> Fields { get; set; }
         private static double PageH { get; set; }
         private static double PageW { get; set; }
 
-
+        private static List<BitmapImage> ImagePreviews { get; set; }
 
         public void Init(string pdfFileName)
         {
@@ -36,12 +40,15 @@ namespace HeroLabExportToPdf.Services
 
             foreach (var field in Fields)
             {
+                //if we don't do this, page indexes are lost at some point. Hug if we know why.
+                var unused = field.PageIndex;
                 PdfDoc.Form.Delete(field);
             }
 
             PageH = PdfDoc.Pages[1].Rect.Height;
             PageW = PdfDoc.Pages[1].Rect.Width;
 
+            ImagePreviews = new List<BitmapImage>();
         }
 
         public void RemoveField(string fieldName)
@@ -60,7 +67,7 @@ namespace HeroLabExportToPdf.Services
 
 
         public void AddField(double ulx, double uly, double width, double height, double winW, double winH,
-            string text, string label, double fontSize)
+            string text, string label, double fontSize, int pageIndex)
         {
             var scaleW = PageW / winW;
             var scaleH = PageH / winH;
@@ -76,7 +83,7 @@ namespace HeroLabExportToPdf.Services
             var lly = PageH - (uly + height);
             var ury = PageH - uly;
             // Create a field
-            var textBoxField = new TextBoxField(PdfDoc.Pages[1], new Rectangle(ulx, lly, urx, ury))
+            var textBoxField = new TextBoxField(PdfDoc.Pages[pageIndex], new Rectangle(ulx, lly, urx, ury))
             {
                 PartialName = label,
                 Value = text,
@@ -88,6 +95,8 @@ namespace HeroLabExportToPdf.Services
                 Characteristics = { Border = System.Drawing.Color.Transparent }
                 ,
                 Name = label
+                ,
+                
             };
 
 
@@ -109,10 +118,10 @@ namespace HeroLabExportToPdf.Services
 
             var scaleX = wpfW /PageW ;
             var scaleY = wpfH / PageH ;
-
-            return Fields.Select(f =>
+            var fl = Fields.Select(f =>
                 (
-                      label: f.PartialName
+                    page: f.PageIndex
+                    , label: f.PartialName
                     , value: f.Value
                     , font: f.DefaultAppearance.FontName
                     , type: f is CheckboxField ? 1 : 2
@@ -123,6 +132,7 @@ namespace HeroLabExportToPdf.Services
                     , index: f.PageIndex
                 )
             );
+            return fl;
         }
 
         public void Save(string fileName)
@@ -131,30 +141,32 @@ namespace HeroLabExportToPdf.Services
         }
 
 
-        public BitmapImage GetImagePreview()
+        public BitmapImage GetImagePreview(int pageIndex)
         {
+
+            if (ImagePreviews.Count >= pageIndex)
+                return ImagePreviews[pageIndex - 1];
+
             var image = new BitmapImage();
             image.BeginInit();
-            image.StreamSource = ToStream();
+            image.StreamSource = ToStream(pageIndex);
             image.EndInit();
+
+            ImagePreviews.Add(image);
             return image;
         }
 
 
-        private static Stream ToStream( )
+        private static Stream ToStream(int pageIndex)
         {
-          
             var memoryStream = new MemoryStream();
-            if (PdfDoc.Pages.Count > 0)
+            if (PdfDoc.Pages.Count >= pageIndex)
             {
                 var device = new BmpDevice(new Resolution(150));
-                device.Process(PdfDoc.Pages[1], memoryStream);
+                device.Process(PdfDoc.Pages[pageIndex], memoryStream);
             }
-
             memoryStream.Seek(0, SeekOrigin.Begin);
-
             return memoryStream;
-
         }
     }
 }

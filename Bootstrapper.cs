@@ -48,7 +48,6 @@ namespace HeroLabExportToPdf
             _container.Singleton<ISaveFileService, SaveFileService>();
 
             _container.PerRequest<CharacterSheetViewModel>();
-            _container.PerRequest<PdfImageViewModel>();
             _container.PerRequest<MainViewModel>();
             
             _container.Handler<FieldFactory>(c => new FieldFactory(
@@ -110,8 +109,6 @@ namespace HeroLabExportToPdf
             MessageBinder.SpecialValues
                 .Add( "$mousex", (ctx) =>
                 {
-                    var s = ctx.Source;
-
                     var e = ctx.EventArgs as MouseEventArgs;
                     return e?.GetPosition(ctx.Source).X;
                 });

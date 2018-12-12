@@ -52,6 +52,7 @@ namespace HeroLabExportToPdf.ViewModels
             if (fileChosen)
             {
                 _pdfService.Init(_openFileService.File.FullName);
+                _characterSheet.SetSheetPreview();
                 ActivateItem(_characterSheet);
             }
         }
@@ -60,7 +61,7 @@ namespace HeroLabExportToPdf.ViewModels
         {
             foreach (var rectangle in _characterSheet.Rectangles)
             {
-                _pdfService.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.Tooltip, rectangle.FontSize);
+                _pdfService.AddField(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, _characterSheet.PdfImage.Width, _characterSheet.PdfImage.Height, rectangle.Text, rectangle.Tooltip, rectangle.FontSize, rectangle.Page);
             }
             
             if(_saveFileService.DetermineFile())
