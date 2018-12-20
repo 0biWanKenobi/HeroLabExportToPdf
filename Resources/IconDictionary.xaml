@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:cnv="clr-namespace:HeroLabExportToPdf.Converters">
+    <ControlTemplate x:Key="Pushpin">
+        <ControlTemplate.Resources>
+            <cnv:DoubleToGridLengthConverter x:Key="ToDoubleConverter"></cnv:DoubleToGridLengthConverter>
+        </ControlTemplate.Resources>
+        <Button BorderThickness="0" Width="{Binding Width, RelativeSource={RelativeSource TemplatedParent}}"
+                cal:Message.Attach="[Event Click] = [Action ToggleTree]"
+        >
+            <Grid>
+                <Viewbox Stretch="Uniform">
+                    <Path
+                        Data="F 1 M 23,16.002 L 20,13.002 20,6 21,6 21,4 11,4 11,6 12,6 12,13.002 9,16.002 9,18 15,18 15,29 17,27 17,18 23,18 23,16.002 Z M 14,6 L 16,6 16,13 14,13 14,6 Z"
+                        Fill="#000000" Stretch="UniformToFill"  >
+                    </Path>
+                </Viewbox>
+            </Grid>
+        </Button>
+    </ControlTemplate>
+    
+</ResourceDictionary>

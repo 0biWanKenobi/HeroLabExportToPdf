@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace HeroLabExportToPdf.Converters
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// Converts a color value to a brush.
-    /// </summary>
-    public class ColorToBrushConverter : IValueConverter
+    public class FocusToOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var color = (Color) value;
-            var colorBrush = new SolidColorBrush
-            {
-                Color = color,
-                Opacity = color.ScA
-               
-            };
-            return colorBrush;
+            var isFocused = value != null && (bool) value;
+            var opacityArray = (object[]) parameter;
+
+            if (opacityArray != null) return isFocused ? opacityArray[0] : opacityArray[1];
+            return 1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

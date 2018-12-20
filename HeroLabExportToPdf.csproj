@@ -88,6 +88,10 @@
     <Compile Include="Caliburn\Micro\Logging\DebugLogger.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\FocusToOpacityConverter.cs" />
+    <Compile Include="Converters\DoubleToGridLengthConverter.cs" />
+    <Compile Include="Converters\IsLessThanConverter.cs" />
+    <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\PageToVisibilityConverter.cs" />
     <Compile Include="Services\BaseFileService.cs" />
     <Compile Include="Services\CoordinateTranslationService.cs" />
@@ -126,6 +130,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\FieldViewDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\IconDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CharacterSheetView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -156,7 +168,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="HelpTextWindow.xaml.cs">
       <DependentUpon>HelpTextWindow.xaml</DependentUpon>
     </Compile>

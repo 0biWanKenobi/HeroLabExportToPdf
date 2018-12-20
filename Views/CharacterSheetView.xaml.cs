@@ -1,4 +1,6 @@
-﻿namespace HeroLabExportToPdf.Views
+﻿using System.Windows;
+
+namespace HeroLabExportToPdf.Views
 {
     public partial class CharacterSheetView
     {
@@ -6,5 +8,6 @@
         {
             InitializeComponent();
         }
+       
     }
 }

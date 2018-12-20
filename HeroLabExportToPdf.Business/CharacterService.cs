@@ -34,7 +34,6 @@ namespace HeroLabExportToPdf.Business
                     .Element("public")?
                     .Element("character");
                 Character = Deserialize(xmlCharacter);
-
             }
         }
 

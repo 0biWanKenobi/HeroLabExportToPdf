@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
-using HeroLabExportToPdf.Commands;
 using HeroLabExportToPdf.Entities.Messages;
 
 namespace HeroLabExportToPdf.ViewModels
@@ -23,8 +21,6 @@ namespace HeroLabExportToPdf.ViewModels
         private string _tooltip;
 
         private bool _selected;
-
-        private ICommand _selectMenuItem;
 
         private double _scaleX, _scaleY;
 
@@ -85,9 +81,9 @@ namespace HeroLabExportToPdf.ViewModels
             {
                 if (_selected == value) return;
                 _selected = value;
-                _color.A = value ? (byte)255 : (byte)200;
+                //_color.A = value ? (byte)255 : (byte)200;
                 NotifyOfPropertyChange(() => Selected);
-                NotifyOfPropertyChange(() => Color);
+                //NotifyOfPropertyChange(() => Color);
             }
         }
        
@@ -95,16 +91,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         public double FontSize{get; private set; }
 
-        public ICommand SelectMenuItem
-        {
-            get => _selectMenuItem;
-            set
-            {
-                if(_selectMenuItem == value) return;
-                _selectMenuItem = value;
-                NotifyOfPropertyChange(() => SelectMenuItem);
-            }
-        }
+        
 
         public string Text
         {
@@ -250,6 +237,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         #endregion
 
+       
 
         #region private properties
         private double ScaleX
@@ -304,7 +292,6 @@ namespace HeroLabExportToPdf.ViewModels
 
             CanDoRepositioning = false;
             eventAggregator.Subscribe(this);
-            SelectMenuItem = new RelayCommand<MenuItemViewModel>(UpdateRectangle, a => true);
             _rectangleContextMenu = menuViewModel.Items;
         }
 
@@ -336,7 +323,7 @@ namespace HeroLabExportToPdf.ViewModels
         }
         
 
-        public void UpdateRectangle(MenuItemViewModel selectedMenuOption)
+        public void UpdateField(MenuItemViewModel selectedMenuOption)
         {
             Tooltip = selectedMenuOption.Text;
             Text = selectedMenuOption.Value;
@@ -355,6 +342,8 @@ namespace HeroLabExportToPdf.ViewModels
             if(delta.isleft || delta.isright)
             Width -= delta.deltah;
         }
+
+        
 
         public void FontSizeChange(double scale)
         {

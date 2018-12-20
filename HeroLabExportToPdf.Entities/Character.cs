@@ -50,6 +50,15 @@ namespace HeroLabExportToPdf.Entities
 
         [XmlArray("attributes"), XmlArrayItem("attribute")]
         public List<ClassAttribute> Attributes { get; set; }
+
+        [XmlArray("defenses"), XmlArrayItem("armor")]
+        public List<Armor> Defenses { get; set; }
+
+        [XmlArray("gear"), XmlArrayItem("item")]
+        public List<GearItem> Gear { get; set; }
+
+        [XmlArray("melee"), XmlArrayItem("weapon")]
+        public List<Weapon> MeleeWeapons { get; set; }
     }
 
 
@@ -92,6 +101,75 @@ namespace HeroLabExportToPdf.Entities
         [XmlAttribute("copper")]
         public int Copper{get; set;}
     }
+
+
+    
+
+    public class GearItem
+    {
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlAttribute("quantity")]
+        public string Quantity { get; set; }
+
+        [XmlElement("weight")]
+        public TextAttribute Weight { get; set; }
+
+        [XmlElement("cost")]
+        public TextAttribute Cost { get; set; }
+    }
+
+    public class Armor : GearItem
+    {
+        [XmlAttribute("ac")]
+        public string Ac { get; set; }
+
+        [XmlAttribute("equipped")]
+        public string Equipped { get; set; }
+    }
+
+
+    public struct Weapon
+    {
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlAttribute("categorytext")]
+        public string Category { get; set; }
+
+        [XmlAttribute("typetext")]
+        public string Type { get; set; }
+
+        [XmlAttribute("attack")]
+        public string Attack { get; set; }
+
+        [XmlAttribute("crit")]
+        public string Crit { get; set; }
+
+        [XmlAttribute("damage")]
+        public string Damage { get; set; }
+
+        [XmlAttribute("quantity")]
+        public string Quantity { get; set; }
+
+        [XmlElement("weight")]
+        public TextAttribute Weight { get; set; }
+
+        [XmlElement("cost")]
+        public TextAttribute Cost { get; set; }
+
+        [XmlElement("wepcategory")]
+        public List<string> WeaponCategories { get; set; }
+
+        [XmlElement("weptype")]
+        public List<string> WeaponTypes { get; set; }
+
+        [XmlElement("description")]
+        public string Description { get; set; }
+    }
+
+
 
     [Serializable]
     public struct Personal
@@ -149,5 +227,8 @@ namespace HeroLabExportToPdf.Entities
     {
         [XmlAttribute("text")]
         public string Text { get; set; }
+
+        [XmlAttribute("value")]
+        public string Value { get; set; }
     }
 }

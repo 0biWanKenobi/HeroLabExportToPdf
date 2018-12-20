@@ -20,6 +20,7 @@ namespace HeroLabExportToPdf.ViewModels
 
 
         #region bindings helpers
+        private ObservableCollection<MenuItemViewModel> _menu;
         private FieldViewModel _selectedField;
         private int _currentPageIndex;
         private double _rectanglesWidth, _rectanglesHeight;
@@ -27,6 +28,17 @@ namespace HeroLabExportToPdf.ViewModels
         #endregion
 
         #region bindings
+
+        public ObservableCollection<MenuItemViewModel> Menu
+        {
+            get => _menu;
+            set
+            {
+                if (_menu == value) return;
+                _menu = value;
+                NotifyOfPropertyChange(() => Menu);
+            }
+        }
 
         public PdfImageViewModel PdfImage { get; set; }
 
@@ -96,6 +108,18 @@ namespace HeroLabExportToPdf.ViewModels
 
 #endregion
 
+        private double _treeWidth;
+
+        public double TreeWidth
+        {
+            get => _treeWidth;
+            set
+            {
+                if (_treeWidth == value) return;
+                _treeWidth = value;
+                NotifyOfPropertyChange(() => TreeWidth);
+            }
+        }
 
         #region guards
 
@@ -107,13 +131,15 @@ namespace HeroLabExportToPdf.ViewModels
         private readonly SynchronizationContext _context;
         
 
-        public CharacterSheetViewModel(DrawingCanvasViewModel drawingCanvasViewModel,
+        public CharacterSheetViewModel(DrawingCanvasViewModel drawingCanvasViewModel, MenuViewModel menuViewModel,
             FieldFactory fieldFactory, IPdfService pdfService, IEventAggregator eventAggregator)
         {
             _pdfService = pdfService;
             PdfImage = new PdfImageViewModel();
             _fieldFactory = fieldFactory;
-            
+            Menu = menuViewModel.Items;
+            TreeWidth = 20;
+
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DragSelectionCanvas = drawingCanvasViewModel;
@@ -122,6 +148,11 @@ namespace HeroLabExportToPdf.ViewModels
 
 
 
+        }
+
+        public void ToggleTree()
+        {
+            TreeWidth = TreeWidth > 16 ? 16 : 20;
         }
 
         public void SetSheetPreview()
@@ -134,8 +165,8 @@ namespace HeroLabExportToPdf.ViewModels
         {
             foreach ((int pageIndex, string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
             {
-                var r = _fieldFactory.Create(this, field.pageIndex, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
-                    Color.FromArgb(200, 129, 63, 191));
+                var r = _fieldFactory.Create(this, field.pageIndex, Rectangles.Count, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
+                    Color.FromRgb(129, 63, 191));
                 
                 Rectangles.Add(r);
             }
@@ -166,8 +197,8 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void Handle(CanvasDrawn message)
         {
-            var newField = _fieldFactory.Create(this, CurrentPageIndex, 0, message.X, message.Y, message.Width, message.Height,
-                Color.FromArgb(200, 129, 63, 191));
+            var newField = _fieldFactory.Create(this, CurrentPageIndex, Rectangles.Count, 0, message.X, message.Y, message.Width, message.Height,
+                Color.FromRgb( 129, 63, 191));
             _context.Send(c =>
                     Rectangles.Add(newField)
                 , null);

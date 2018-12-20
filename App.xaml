@@ -8,6 +8,8 @@
                 <ResourceDictionary>
                     <heroLabExportToPdf:Bootstrapper x:Key="Bootstrapper" />
                 </ResourceDictionary>
+                <ResourceDictionary Source="/Resources/FieldViewDictionary.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/IconDictionary.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -48,9 +48,7 @@
     <Compile Include="AsposeLicense.cs" />
     <Compile Include="BaseCharacterService.cs" />
     <Compile Include="CharacterService.cs" />
-    <Compile Include="ExportService.cs" />
     <Compile Include="ICharacterService.cs" />
-    <Compile Include="IExportService.cs" />
     <Compile Include="ProfileLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

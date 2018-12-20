@@ -98,9 +98,25 @@ namespace HeroLabExportToPdf
                 {
                     if(ctx.Source is Viewbox viewbox && viewbox.Child is TextBlock tb)
                     {
-                        return viewbox.ActualWidth / tb.ActualWidth;
+                        if(tb.ActualWidth > 0)
+                            return viewbox.ActualWidth / tb.ActualWidth;
+                        return 1;
                     }
                     return double.NaN;
+                });
+
+
+            MessageBinder.SpecialValues
+                .Add("$menuitem", (ctx) =>
+                {
+                    if(ctx.EventArgs is RoutedEventArgs eventArgs && ctx.Source is TreeViewItem treeItem && treeItem.Header is MenuItemViewModel menuItem)
+                    {
+                        //prevent bubble up, so that parent tree nodes do not trigger an event
+                        eventArgs.Handled = true;
+                        return menuItem;
+                    }
+
+                    return null;
                 });
 
             MessageBinder.SpecialValues

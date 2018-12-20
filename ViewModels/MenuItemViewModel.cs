@@ -6,8 +6,7 @@ namespace HeroLabExportToPdf.ViewModels
     public class MenuItemViewModel : PropertyChangedBase
     {
         private string _text, _value;
-        private bool _isItemSet;
-        private readonly IEventAggregator _eventAggregator;
+        private bool _isSelected;
         
         public string Text
         {
@@ -31,25 +30,19 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public bool IsItemSet
+        public bool IsSelected
         {
-            get => _isItemSet;
+            get => _isSelected;
             set
             {
-                if (_isItemSet == value) return;
-                _isItemSet = value;
-                NotifyOfPropertyChange(() => IsItemSet);
+                if (_isSelected == value) return;
+                _isSelected = value;
+                NotifyOfPropertyChange(() => IsSelected);
             }
         }
 
        
         
         public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
-
-        public MenuItemViewModel(IEventAggregator eventAggregator)
-        {
-            _eventAggregator = eventAggregator;
-        }
-       
     }
 }
