@@ -10,9 +10,15 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <localroot:BindingProxy x:Key="Proxy" Data="{Binding ElementName=CharacterSheet,Path=DataContext}" />
+      
     </UserControl.Resources>
-    <Image x:Name="Image" 
-           cal:Message.Attach="[Event SizeChanged] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action ScaleContent($imagesize)]; [Event Loaded] = [Action UpdateRectangles()]"
+    <Image 
+           Source="{Binding Image, NotifyOnTargetUpdated=True}"
+           cal:Message.Attach="
+                    [Event SizeChanged] = [Action ScaleContent($imagesize)];
+                    [Event Loaded] = [Action ScaleContent($imagesize)]; 
+                    [Event TargetUpdated] = [Action UpdateFormFields()];
+                    [Event Loaded] = [Action UpdateFormFields()]"
            cal:Action.TargetWithoutContext="{Binding Data, Source={StaticResource Proxy}}"
            observers:SizeObserver.Observe="True"
            observers:SizeObserver.ObservedWidth="{Binding Width, Mode=OneWayToSource}"

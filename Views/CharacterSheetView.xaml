@@ -17,6 +17,7 @@
         <cnv:NullToBooleanConverter x:Key="NullToBooleanConverter"></cnv:NullToBooleanConverter>
         <cnv:DoubleToGridLengthConverter x:Key="ToDoubleConverter"></cnv:DoubleToGridLengthConverter>
         <cnv:IsLessThanConverter x:Key="LessThanConverter"></cnv:IsLessThanConverter>
+        <cnv:HasTextToBooleanConverter x:Key="HasTextToBooleanConverter"></cnv:HasTextToBooleanConverter>
         <Style x:Key="ListBoxStyle">
             <Setter>
                 <Setter.Property>ListBox.Template</Setter.Property>
@@ -45,17 +46,19 @@
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding TreeWidth, Converter={StaticResource ToDoubleConverter}, Mode=OneWay}" x:Name="TreeColumnDef">
+                <ColumnDefinition x:Name="TreeColumnDef">
                     <ColumnDefinition.Style>
                         <Style TargetType="{x:Type ColumnDefinition}">
+                            <Setter Property="Width" Value="{Binding TreeWidth, Converter={StaticResource ToDoubleConverter}}"></Setter>
+                            <Setter Property="MinWidth" Value="180"></Setter>
+                            <Setter Property="MaxWidth" Value="{x:Static sys:Double.PositiveInfinity}"></Setter>
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding Width, ElementName=TreeColumnDef, Converter={StaticResource LessThanConverter}, ConverterParameter='16'}">
                                     <Setter Property="MinWidth" Value="16"></Setter>
                                     <Setter Property="MaxWidth" Value="16"></Setter>
                                 </DataTrigger>
-                                <DataTrigger Value="False" Binding="{Binding Width, ElementName=TreeColumnDef, Converter={StaticResource LessThanConverter}, ConverterParameter='16'}">
-                                    <Setter Property="MinWidth" Value="180"></Setter>
-                                    <Setter Property="MaxWidth" Value="{x:Static sys:Double.PositiveInfinity}"></Setter>
+                                <DataTrigger Value="True" Binding="{Binding IsMouseOver, ElementName=SidePanel}">
+                                    <Setter Property="Width" Value="20*"></Setter>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -64,22 +67,30 @@
                 <ColumnDefinition Width="80*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <DockPanel Grid.Row="0" Grid.Column="0" >
+            <DockPanel Grid.Row="0" Grid.Column="0" x:Name="SidePanel">
                 <StackPanel Orientation="Horizontal" Height="16" DockPanel.Dock="Top" FlowDirection="RightToLeft" Background="BlanchedAlmond">
                     <DockPanel>
                             <ContentControl Template="{StaticResource Pushpin}" Height="16" Width="16"></ContentControl>
                     </DockPanel>
                 </StackPanel>     
                 <TreeView ItemsSource="{Binding Menu}" IsTabStop="False">
-                    <TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="cal:Message.Attach" Value="[Event GotFocus] = [Action UpdateField($menuitem)]"></Setter>
-                            <Setter Property="cal:Action.TargetWithoutContext" Value="{Binding SelectedItem, ElementName=Rectangles, PresentationTraceSources.TraceLevel=High}"></Setter>
+                            <Setter Property="cal:Action.TargetWithoutContext" Value="{Binding SelectedItem, ElementName=FormFields}"></Setter>
+                            <EventSetter Event="LostFocus" Handler="OnFocusLostHandler"></EventSetter>
                             <Style.Triggers>
-                                <Trigger Property="HasItems" Value="True">
+                                <DataTrigger Binding="{Binding Header, RelativeSource={RelativeSource Self}, Converter={StaticResource HasTextToBooleanConverter}}" Value="False">
                                     <Setter Property="Focusable" Value="False"></Setter>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding SelectedItem, ElementName=Rectangles, Converter={StaticResource NullToBooleanConverter}}" Value="False">
+                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Header, RelativeSource={RelativeSource Self}, Converter={StaticResource HasTextToBooleanConverter}}" Value="False"></Condition>
+                                        <Condition Binding="{Binding HasItems, RelativeSource={RelativeSource Self}}" Value="False"></Condition>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Foreground" Value="DarkGray"></Setter>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding SelectedItem, ElementName=FormFields, Converter={StaticResource NullToBooleanConverter}}" Value="False">
                                     <Setter Property="Focusable" Value="False"></Setter>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding Width, ElementName=TreeColumnDef, Converter={StaticResource LessThanConverter}, ConverterParameter='16'}">
@@ -87,7 +98,7 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </TreeView.Resources>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:MenuItemViewModel}" ItemsSource="{Binding MenuItems}">
                             <TextBlock Text="{Binding Text}" ToolTip="{Binding Value}"/>
@@ -106,16 +117,16 @@
                                  [Event MouseLeftButtonUp] = [Action StopDrawing()]"
                     >
                     <ContentControl x:Name="PdfImage"/>
-                    <ListBox x:Name="Rectangles"
+                    <ListBox x:Name="FormFields"
                              SelectionMode="Extended"
                              Background="Transparent"
-                             Width="{Binding RectanglesWidth}"
-                             Height="{Binding RectanglesHeight}"
+                             Width="{Binding FormFieldsWidth}"
+                             Height="{Binding FormFieldsHeight}"
                              SelectedItem="{Binding SelectedField}"
                              BorderThickness="0"
                              Padding="0"
                              Style="{Binding Source={StaticResource ListBoxStyle}}"
-                             cal:Message.Attach="[Event KeyDown] = [Action DeleteRectangle($deletekeypress)]"
+                             cal:Message.Attach="[Event KeyDown] = [Action DeleteFormField($deletekeypress)]"
                      
                     >
                         <ListBox.ItemsPanel>
@@ -129,7 +140,6 @@
                             >
                                 <Setter Property="Canvas.Left" Value="{Binding X}"/>
                                 <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWayToSource}"></Setter>
                                 <Setter Property="Padding" Value="0"/>
                                 <Setter Property="BorderThickness" Value="0"></Setter>
                                 <Setter Property="Visibility">
@@ -141,7 +151,9 @@
                                         
                                     </Setter.Value>
                                 </Setter>
+                                
                             </Style>
+                            
                         </ListBox.ItemContainerStyle>
                     </ListBox>
                     <ContentControl

@@ -57,7 +57,6 @@
     <Reference Include="Caliburn.Micro.Platform.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -67,14 +66,8 @@
       <HintPath>packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -90,9 +83,14 @@
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\FocusToOpacityConverter.cs" />
     <Compile Include="Converters\DoubleToGridLengthConverter.cs" />
+    <Compile Include="Converters\HasTextToBooleanConverter.cs" />
     <Compile Include="Converters\IsLessThanConverter.cs" />
+    <Compile Include="Converters\MultiKeyGestureConverter.cs" />
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\PageToVisibilityConverter.cs" />
+    <Compile Include="Input\KeySequence.cs" />
+    <Compile Include="Input\KeyTrigger.cs" />
+    <Compile Include="Input\MultiKeyGesture.cs" />
     <Compile Include="Services\BaseFileService.cs" />
     <Compile Include="Services\CoordinateTranslationService.cs" />
     <Compile Include="Services\ICoordinateTranslationService.cs" />
@@ -133,6 +131,10 @@
     <Page Include="Resources\FieldViewDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\HideEmptyTooltipDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\IconDictionary.xaml">
       <SubType>Designer</SubType>

@@ -15,18 +15,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeroLabExportToPdf.Entities
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		All|Any CPU = All|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1AAA375-E18C-468A-86AC-D310F3C16282}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AAA375-E18C-468A-86AC-D310F3C16282}.All|Any CPU.Build.0 = Release|Any CPU
 		{F1AAA375-E18C-468A-86AC-D310F3C16282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1AAA375-E18C-468A-86AC-D310F3C16282}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1AAA375-E18C-468A-86AC-D310F3C16282}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1AAA375-E18C-468A-86AC-D310F3C16282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{414DA809-4ABF-46D7-914E-29156141F27E}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{414DA809-4ABF-46D7-914E-29156141F27E}.All|Any CPU.Build.0 = Release|Any CPU
 		{414DA809-4ABF-46D7-914E-29156141F27E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{414DA809-4ABF-46D7-914E-29156141F27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{414DA809-4ABF-46D7-914E-29156141F27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{414DA809-4ABF-46D7-914E-29156141F27E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6362CECB-BAD9-42D6-AD17-193C99C410E2}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{6362CECB-BAD9-42D6-AD17-193C99C410E2}.All|Any CPU.Build.0 = Release|Any CPU
 		{6362CECB-BAD9-42D6-AD17-193C99C410E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6362CECB-BAD9-42D6-AD17-193C99C410E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6362CECB-BAD9-42D6-AD17-193C99C410E2}.Release|Any CPU.ActiveCfg = Release|Any CPU

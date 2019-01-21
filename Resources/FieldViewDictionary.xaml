@@ -116,7 +116,7 @@
 
         <!-- Designer Item Template-->
         <ControlTemplate x:Key="DesignerItemTemplate" TargetType="ContentControl">
-            <Grid DataContext="{Binding Tag, ElementName=RectangleControl}">
+            <Grid DataContext="{Binding Tag, ElementName=FieldControl}">
                 <Control Template="{StaticResource MoveTemplate}" Cursor="SizeAll"/>
                 <Control Template="{StaticResource ResizeDecoratorTemplate}">
                     <Control.Resources>

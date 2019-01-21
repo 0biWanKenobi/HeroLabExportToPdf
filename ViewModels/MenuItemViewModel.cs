@@ -6,7 +6,6 @@ namespace HeroLabExportToPdf.ViewModels
     public class MenuItemViewModel : PropertyChangedBase
     {
         private string _text, _value;
-        private bool _isSelected;
         
         public string Text
         {
@@ -30,16 +29,11 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected == value) return;
-                _isSelected = value;
-                NotifyOfPropertyChange(() => IsSelected);
-            }
-        }
+        public string Description { get; set; }
+
+        public string Id { get; set; }
+
+        
 
        
         

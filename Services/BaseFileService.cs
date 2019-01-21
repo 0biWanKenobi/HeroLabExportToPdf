@@ -6,34 +6,34 @@ namespace HeroLabExportToPdf.Services
     public class BaseFileService<T> : IFileService<T> where T : FileDialog, new()
     {
 
-        protected readonly T _fileDialog;
+        protected readonly T FileDialog;
 
         public BaseFileService()
         {
-            _fileDialog = new T(){CheckFileExists = true, CheckPathExists = true};
+            FileDialog = new T(){CheckFileExists = true, CheckPathExists = true};
         }
 
         protected BaseFileService(T fileDialog)
         {
-            _fileDialog = fileDialog;
+            FileDialog = fileDialog;
         }
 
-        public FileInfo File => new FileInfo(_fileDialog.FileName);
+        public FileInfo File => new FileInfo(FileDialog.FileName);
         public string Filter  {
-            get => _fileDialog.Filter;
-            set => _fileDialog.Filter = value;
+            get => FileDialog.Filter;
+            set => FileDialog.Filter = value;
         }
         public string InitialDirectory {
-            get => _fileDialog.InitialDirectory;
-            set => _fileDialog.InitialDirectory = value;
+            get => FileDialog.InitialDirectory;
+            set => FileDialog.InitialDirectory = value;
         } 
         public string Title {
-            get => _fileDialog.Title;
-            set => _fileDialog.Title = value;
+            get => FileDialog.Title;
+            set => FileDialog.Title = value;
         }
         public bool DetermineFile()
         {
-            return _fileDialog.ShowDialog().GetValueOrDefault();
+            return FileDialog.ShowDialog().GetValueOrDefault();
         }
     }
 }

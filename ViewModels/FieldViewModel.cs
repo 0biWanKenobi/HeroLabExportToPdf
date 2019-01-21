@@ -20,8 +20,6 @@ namespace HeroLabExportToPdf.ViewModels
 
         private string _tooltip;
 
-        private bool _selected;
-
         private double _scaleX, _scaleY;
 
         /// <summary>
@@ -62,6 +60,8 @@ namespace HeroLabExportToPdf.ViewModels
 
         #region Properties
 
+        public string Id { get; private set; }
+
         public int Page
         {
             get => _page;
@@ -74,18 +74,7 @@ namespace HeroLabExportToPdf.ViewModels
         }
 
 
-        public bool Selected
-        {
-            get => _selected;
-            set
-            {
-                if (_selected == value) return;
-                _selected = value;
-                //_color.A = value ? (byte)255 : (byte)200;
-                NotifyOfPropertyChange(() => Selected);
-                //NotifyOfPropertyChange(() => Color);
-            }
-        }
+        
        
         public string FontFamily { get; set; }
 
@@ -103,6 +92,7 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Text);
             }
         }
+
 
         
         public ObservableCollection<MenuItemViewModel> RectangleContextMenu
@@ -264,7 +254,7 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Y);
             }
         }
-        private int Type { get; set; }
+        public int Type { get; private set; }
         
 
         private double _initialDragX, _initialDragY;
@@ -325,8 +315,9 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void UpdateField(MenuItemViewModel selectedMenuOption)
         {
-            Tooltip = selectedMenuOption.Text;
+            Tooltip = selectedMenuOption.Description;
             Text = selectedMenuOption.Value;
+            Id = selectedMenuOption.Id;
         }
 
 

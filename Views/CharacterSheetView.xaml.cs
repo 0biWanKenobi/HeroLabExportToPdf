@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace HeroLabExportToPdf.Views
 {
@@ -8,6 +9,11 @@ namespace HeroLabExportToPdf.Views
         {
             InitializeComponent();
         }
-       
+
+        private void OnFocusLostHandler(object sender, RoutedEventArgs e)
+        {
+            if (sender is TreeViewItem item) 
+                item.IsSelected = false;
+        }
     }
 }

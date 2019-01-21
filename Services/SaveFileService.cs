@@ -10,8 +10,8 @@ namespace HeroLabExportToPdf.Services
 
         public string DefaultFileName
         {
-            get => _fileDialog.FileName;
-            set => _fileDialog.FileName = value;
+            get => FileDialog.FileName;
+            set => FileDialog.FileName = value;
         }
     }
 }

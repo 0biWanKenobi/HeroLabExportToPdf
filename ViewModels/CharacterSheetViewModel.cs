@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
+using HeroLabExportToPdf.Entities;
 using HeroLabExportToPdf.Entities.Messages;
 using HeroLabExportToPdf.Services;
 
@@ -23,7 +26,7 @@ namespace HeroLabExportToPdf.ViewModels
         private ObservableCollection<MenuItemViewModel> _menu;
         private FieldViewModel _selectedField;
         private int _currentPageIndex;
-        private double _rectanglesWidth, _rectanglesHeight;
+        private double _formFieldsWidth, _formFieldsHeight;
         private DrawingCanvasViewModel _dragSelectionCanvas;
         #endregion
 
@@ -54,25 +57,25 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
-        public double RectanglesWidth
+        public double FormFieldsWidth
         {
-            get => _rectanglesWidth;
+            get => _formFieldsWidth;
             set
             {
-                if (_rectanglesWidth.Equals(value)) return;
-                _rectanglesWidth = value;
-                NotifyOfPropertyChange(() => RectanglesWidth);
+                if (_formFieldsWidth.Equals(value)) return;
+                _formFieldsWidth = value;
+                NotifyOfPropertyChange(() => FormFieldsWidth);
             }
         }
 
-        public double RectanglesHeight
+        public double FormFieldsHeight
         {
-            get => _rectanglesHeight;
+            get => _formFieldsHeight;
             set
             {
-                if (_rectanglesHeight.Equals(value)) return;
-                _rectanglesHeight = value;
-                NotifyOfPropertyChange(() => RectanglesHeight);
+                if (_formFieldsHeight.Equals(value)) return;
+                _formFieldsHeight = value;
+                NotifyOfPropertyChange(() => FormFieldsHeight);
             }
         }
 
@@ -90,18 +93,15 @@ namespace HeroLabExportToPdf.ViewModels
         /// <summary>
         /// The list of rectangles that is displayed in the ListBox.
         /// </summary>
-        public ObservableCollection<FieldViewModel> Rectangles { get; } = new ObservableCollection<FieldViewModel>();
+        public ObservableCollection<FieldViewModel> FormFields { get; } = new ObservableCollection<FieldViewModel>();
 
         public FieldViewModel SelectedField
         {
             get => _selectedField;
             set
             {
-                if(_selectedField != null)
-                    _selectedField.Selected = false;
+                if (value == _selectedField) return;
                 _selectedField = value;
-                if(value != null)
-                _selectedField.Selected = true;
                 NotifyOfPropertyChange(() => SelectedField);
             }
         }
@@ -121,10 +121,38 @@ namespace HeroLabExportToPdf.ViewModels
             }
         }
 
+        private bool _clickedToMinimize;
+
+        public bool ClickedToMinimize
+        {
+            get => _clickedToMinimize;
+            set
+            {
+                if (_clickedToMinimize == value) return;
+                _clickedToMinimize = value;
+                NotifyOfPropertyChange(() => ClickedToMinimize);
+            }
+        }
+
+        
+
         #region guards
 
         public bool CanPrevPage => CurrentPageIndex > 1;
         public bool CanNextPage => CurrentPageIndex < _pdfService.PageCount;
+
+        private bool _canUpdateFormFields;
+
+        public bool CanUpdateFormFields
+        {
+            get => _canUpdateFormFields;
+            set
+            {
+                if (_canUpdateFormFields == value) return;
+                _canUpdateFormFields = value;
+                NotifyOfPropertyChange(() => CanUpdateFormFields);
+            }
+        }
 
         #endregion
 
@@ -145,7 +173,7 @@ namespace HeroLabExportToPdf.ViewModels
             DragSelectionCanvas = drawingCanvasViewModel;
             _context = SynchronizationContext.Current;
             CurrentPageIndex = 1;
-
+            CanUpdateFormFields = true;
 
 
         }
@@ -153,6 +181,7 @@ namespace HeroLabExportToPdf.ViewModels
         public void ToggleTree()
         {
             TreeWidth = TreeWidth > 16 ? 16 : 20;
+            ClickedToMinimize = TreeWidth == 16;
         }
 
         public void SetSheetPreview()
@@ -161,32 +190,68 @@ namespace HeroLabExportToPdf.ViewModels
             NotifyOfPropertyChange(() => CanNextPage);
         }
 
-        public void UpdateRectangles()
+
+        
+
+        public void UpdateFormFields()
         {
+            FormFields.Clear();
+
             foreach ((int pageIndex, string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
             {
-                var r = _fieldFactory.Create(this, field.pageIndex, Rectangles.Count, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
+                var r = _fieldFactory.Create(this, field.pageIndex, FormFields.Count, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
                     Color.FromRgb(129, 63, 191));
                 
-                Rectangles.Add(r);
+                FormFields.Add(r);
             }
         }
 
-        public void DeleteRectangle(bool deleted)
+        public void UpdateFormFields(List<FormField> formFields)
+        {
+            FormFields.Clear();
+            foreach (var field in formFields)
+            {
+                var r = _fieldFactory.Create(this, field.Page, FormFields.Count, field.Type, field.X, field.Y, field.Width, field.Height,
+                    Color.FromRgb(129, 63, 191));
+
+                var matchingMenuElement = FindById(Menu, field.Id);
+
+                r.Text = matchingMenuElement?.Value;
+                r.Tooltip = matchingMenuElement?.Text;
+                
+
+                FormFields.Add(r);
+            }
+        }
+
+        private MenuItemViewModel FindById(IEnumerable<MenuItemViewModel> items,  string id)
+        {
+            if (items == null || id == null) return null;
+
+            foreach (var menuItemViewModel in items)
+            {
+                if (menuItemViewModel.Id == id) return menuItemViewModel;
+                var item = FindById(menuItemViewModel.MenuItems, id);
+                if (item != null) return item;
+            }
+            return null;
+        }
+
+        public void DeleteFormField(bool deleted)
         {
             if (!deleted) return;
             while(_selectedField != null)
             {
                 _pdfService.RemoveField(_selectedField.Tooltip);
-                Rectangles.Remove(_selectedField);
+                FormFields.Remove(_selectedField);
             }
         }
 
         public bool CanScaleContent => true;
         public void ScaleContent((double width, double height) imageSize)
         {
-            RectanglesWidth = imageSize.width;
-            RectanglesHeight = imageSize.height;
+            FormFieldsWidth = imageSize.width;
+            FormFieldsHeight = imageSize.height;
             _eventAggregator.Publish(
                 new ImageResize{ScaleX = PdfImage.ScaleX, ScaleY = PdfImage.ScaleY },
                 action => {
@@ -197,10 +262,10 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void Handle(CanvasDrawn message)
         {
-            var newField = _fieldFactory.Create(this, CurrentPageIndex, Rectangles.Count, 0, message.X, message.Y, message.Width, message.Height,
+            var newField = _fieldFactory.Create(this, CurrentPageIndex, FormFields.Count, 0, message.X, message.Y, message.Width, message.Height,
                 Color.FromRgb( 129, 63, 191));
             _context.Send(c =>
-                    Rectangles.Add(newField)
+                    FormFields.Add(newField)
                 , null);
 
         }
@@ -209,14 +274,18 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void PrevPage()
         {
+            CanUpdateFormFields = false;
             CurrentPageIndex--;
             PdfImage.Image = _pdfService.GetImagePreview(CurrentPageIndex);
+            CanUpdateFormFields = true;
         }
 
         public void NextPage()
         {
+            CanUpdateFormFields = false;
             CurrentPageIndex++;
             PdfImage.Image = _pdfService.GetImagePreview(CurrentPageIndex);
+            CanUpdateFormFields = true;
         }
 
     }

@@ -9,6 +9,8 @@ using Aspose.Pdf.Annotations;
 using Aspose.Pdf.Devices;
 using Aspose.Pdf.Forms;
 using HeroLabExportToPdf.Business;
+using Color = Aspose.Pdf.Color;
+using Rectangle = Aspose.Pdf.Rectangle;
 
 namespace HeroLabExportToPdf.Services
 {
@@ -27,15 +29,12 @@ namespace HeroLabExportToPdf.Services
         public int PageCount  => PdfDoc?.Pages.Count ?? 0;
 
         private static List<Field> Fields { get; set; }
-        private static double PageH { get; set; }
-        private static double PageW { get; set; }
 
         private static List<BitmapImage> ImagePreviews { get; set; }
 
         public void Init(string pdfFileName)
         {
             PdfDoc = new Document(pdfFileName);
-
             Fields = PdfDoc.Form.Fields.ToList();
 
             foreach (var field in Fields)
@@ -45,10 +44,40 @@ namespace HeroLabExportToPdf.Services
                 PdfDoc.Form.Delete(field);
             }
 
-            PageH = PdfDoc.Pages[1].Rect.Height;
-            PageW = PdfDoc.Pages[1].Rect.Width;
-
+            
             ImagePreviews = new List<BitmapImage>();
+        }
+
+        public void Init(FileStream[] imageStreams)
+        {
+            PdfDoc = new Document();
+            Fields = new List<Field>();
+
+            foreach (var stream in imageStreams)
+            {
+                PdfDoc.Pages.Add();
+                AddPageWithImage(stream, PdfDoc.Pages.Count);
+            }
+            
+            ImagePreviews = new List<BitmapImage>();
+        }
+
+        private void AddPageWithImage(Stream imageStream, int pageIndex)
+        {
+            var page = PdfDoc.Pages[pageIndex];
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = imageStream;
+            image.EndInit();
+            page.SetPageSize(image.Width, image.Height);
+            page.Resources.Images.Add(imageStream);
+           
+            var matrix = new Matrix(new [] { image.Width, 0, 0, image.Height, 0, 0 });
+            page.Contents.Add(new Operator.ConcatenateMatrix(matrix));
+            var ximage = page.Resources.Images[page.Resources.Images.Count];
+
+            page.Contents.Add(new Operator.Do(ximage.Name));
+            page.Contents.Add(new Operator.GRestore());
         }
 
         public void RemoveField(string fieldName)
@@ -69,8 +98,11 @@ namespace HeroLabExportToPdf.Services
         public void AddField(double ulx, double uly, double width, double height, double winW, double winH,
             string text, string label, double fontSize, int pageIndex)
         {
-            var scaleW = PageW / winW;
-            var scaleH = PageH / winH;
+            var pageW = PdfDoc.Pages[pageIndex].Rect.Width;
+            var pageH = PdfDoc.Pages[pageIndex].Rect.Height;
+
+            var scaleW = pageW / winW;
+            var scaleH = pageH / winH;
 
             ulx = ulx * scaleW;
             uly = uly * scaleH;
@@ -80,8 +112,12 @@ namespace HeroLabExportToPdf.Services
             fontSize = fontSize * scaleW;
 
             var urx = ulx + width;
-            var lly = PageH - (uly + height);
-            var ury = PageH - uly;
+            var lly = pageH - (uly + height);
+            var ury = pageH - uly;
+
+            var marginH = 2 * scaleH;
+            var marginW = 2 * scaleW;
+
             // Create a field
             var textBoxField = new TextBoxField(PdfDoc.Pages[pageIndex], new Rectangle(ulx, lly, urx, ury))
             {
@@ -90,7 +126,7 @@ namespace HeroLabExportToPdf.Services
                 Color = Color.Transparent,
                 DefaultAppearance = { FontSize = fontSize }
                 ,
-                Margin = new MarginInfo(5, 0, 5, 0)
+                Margin = new MarginInfo(marginW, marginH, marginW, marginH)
                 ,
                 Characteristics = { Border = System.Drawing.Color.Transparent }
                 ,
@@ -108,7 +144,7 @@ namespace HeroLabExportToPdf.Services
             textBoxField.Border = border;
 
             // Add field to the document
-            PdfDoc.Form.Add(textBoxField, 1);
+            PdfDoc.Form.Add(textBoxField, pageIndex);
 
 
         }
@@ -116,21 +152,27 @@ namespace HeroLabExportToPdf.Services
         public IEnumerable GetFields(double wpfW, double wpfH)
         {
 
-            var scaleX = wpfW /PageW ;
-            var scaleY = wpfH / PageH ;
+            
             var fl = Fields.Select(f =>
-                (
-                    page: f.PageIndex
-                    , label: f.PartialName
-                    , value: f.Value
-                    , font: f.DefaultAppearance.FontName
-                    , type: f is CheckboxField ? 1 : 2
-                    , width: f.Rect.Width * scaleX
-                    , height: f.Rect.Height * scaleY
-                    , x: f.Rect.LLX * scaleX
-                    , y: (PageH - f.Rect.URY) * scaleY
-                    , index: f.PageIndex
-                )
+                {
+                    var pageW = PdfDoc.Pages[f.PageIndex].Rect.Width;
+                    var pageH = PdfDoc.Pages[f.PageIndex].Rect.Height;
+                    var scaleX = wpfW / pageW ;
+                    var scaleY = wpfH / pageH ;
+                    
+                    return (
+                        page: f.PageIndex
+                        , label: f.PartialName
+                        , value: f.Value
+                        , font: f.DefaultAppearance.FontName
+                        , type: f is CheckboxField ? 1 : 2
+                        , width: f.Rect.Width * scaleX
+                        , height: f.Rect.Height * scaleY
+                        , x: f.Rect.LLX * scaleX
+                        , y: (pageH - f.Rect.URY) * scaleY
+                        , index: f.PageIndex
+                    );
+                }
             );
             return fl;
         }

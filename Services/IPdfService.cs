@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace HeroLabExportToPdf.Services
@@ -12,6 +13,8 @@ namespace HeroLabExportToPdf.Services
         BitmapImage GetImagePreview(int pageIndex);
 
         void Init(string pdfFileName);
+
+        void Init(FileStream[] imageStreams);
 
         void RemoveField(string fieldName);
 

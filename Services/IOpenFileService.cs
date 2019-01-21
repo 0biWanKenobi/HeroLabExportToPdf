@@ -21,5 +21,6 @@ namespace HeroLabExportToPdf.Services
         /// </summary>
         bool Multiselect { get; set; }
         
+        string FileName { get; set; }
     }
 }
