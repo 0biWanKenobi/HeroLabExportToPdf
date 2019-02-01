@@ -18,7 +18,7 @@ namespace HeroLabExportToPdf.Entities
         public string PlayerName { get; set; }
 
         [XmlElement("race")]
-        public Attribute Race { get; set; }
+        public Race Race { get; set; }
 
         [XmlElement("alignment")]
         public Attribute Alignment { get; set; }
@@ -40,6 +40,15 @@ namespace HeroLabExportToPdf.Entities
 
         [XmlArray("feats"), XmlArrayItem("feat")]
         public List<Feat> Feats { get; set; }
+
+        [XmlArray("traits"), XmlArrayItem("trait")]
+        public List<Trait> Traits { get; set; }
+
+        [XmlArray("spellsknown"), XmlArrayItem("spell")]
+        public List<Spell> SpellsKnown { get; set; }
+
+        [XmlArray("spellsmemorized"), XmlArrayItem("spell")]
+        public List<Spell> SpellsMemorized { get; set; }
 
         [XmlElement("size")]
         public Attribute Size { get; set; }
@@ -75,10 +84,19 @@ namespace HeroLabExportToPdf.Entities
         public List<Armor> Defenses { get; set; }
 
         [XmlArray("gear"), XmlArrayItem("item")]
-        public List<GearItem> Gear { get; set; }
+        public List<Item> Gear { get; set; }
+
+        [XmlArray("magicitems"), XmlArrayItem("item")]
+        public List<Item> MagicItems { get; set; }
 
         [XmlArray("melee"), XmlArrayItem("weapon")]
         public List<Weapon> MeleeWeapons { get; set; }
+
+        [XmlArray("ranged"), XmlArrayItem("weapon")]
+        public List<RangedWeapon> RangedWeapons { get; set; }
+
+        [XmlArray("otherspecials"), XmlArrayItem("special")]
+        public List<Special> Specials { get; set; }
     }
 
 
@@ -90,6 +108,12 @@ namespace HeroLabExportToPdf.Entities
         public string Name { get; set; }
         [XmlAttribute("value")]
         public string Value { get; set; }
+    }
+
+    public class Race : Attribute
+    {
+        [XmlElement("ethnicity")]
+        public string Ethnicity { get; set; }
     }
 
     [Serializable]
@@ -105,10 +129,10 @@ namespace HeroLabExportToPdf.Entities
         public string Name { get; set; }
 
         [XmlElement("attrvalue")]
-        public CharacterAttributeDetail Value { get; set; }
+        public AttributeSet2 Value { get; set; }
 
         [XmlElement("attrbonus")]
-        public CharacterAttributeDetail Bonus { get; set; }
+        public AttributeSet2 Bonus { get; set; }
 
         [XmlElement("situationalmodifiers")]
         public SituationalModList Modifiers { get; set; }
@@ -117,21 +141,32 @@ namespace HeroLabExportToPdf.Entities
 
 
     [Serializable]
-    public class TextElement
+    public class AttributeText
     {
         [XmlAttribute("text")]
         public string Text { get; set; }
     }
 
-    [Serializable]
-    public class TextWithValueElement : TextElement
+    public class AttributeName
+    {
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+    }
+
+    public class AttributeQuantity
+    {
+        [XmlAttribute("quantity")]
+        public string Quantity { get; set; }
+    }
+
+    public class AttributeSet1 : AttributeText
     {
 
         [XmlAttribute("value")]
         public string Value { get; set; }
     }
-
-    public class CharacterAttributeDetail : TextElement
+    
+    public class AttributeSet2 : AttributeText
     {
 
         [XmlAttribute("base")]
@@ -141,13 +176,22 @@ namespace HeroLabExportToPdf.Entities
         public string Modified { get; set; }
     }
 
-    public class SituationalMod : TextElement
+    public class AttributeSet3 : AttributeName
+    {
+        [XmlAttribute("categorytext")]
+        public string CategoryText { get; set; }
+
+        [XmlElement("description")]
+        public string Description { get; set; }
+    }
+    
+    public class SituationalMod : AttributeText
     {
         [XmlAttribute("source")]
         public string Source { get; set; }
     }
 
-    public class SituationalModList : TextElement
+    public class SituationalModList : AttributeText
     {
         [XmlElement("situationalmodifier")]
         public List<SituationalMod> SituationalMods { get; set; }
@@ -187,8 +231,6 @@ namespace HeroLabExportToPdf.Entities
         [XmlElement("allsaves")]
         public SaveRoll AllSaves { get; set; }
     }
-
-
     
     public class Skill {
         [XmlElement("description")]
@@ -228,25 +270,108 @@ namespace HeroLabExportToPdf.Entities
         public string Usable { get; set; } = "yes";
     }
 
-    
-    public class Feat {
-        [XmlElement("description")]
-        public string Description { get; set; }
-
-        [XmlElement("featcategory")]
-        public string FeatCategory { get; set; }
-
+    [XmlRoot("special")]
+    public class Special
+    {
         [XmlAttribute("name")]
         public string Name { get; set; }
 
-        [XmlAttribute("categorytext")]
-        public string CategoryText { get; set; }
+        [XmlAttribute("shortname")]
+        public string ShortName { get; set; }
+
+        [XmlElement("description")]
+        public string Description { get; set; }
+    }
+
+    public class Spell
+    {
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlAttribute("level")]
+        public string Level { get; set; }
+
+        [XmlAttribute("class")]
+        public string Class { get; set; }
+
+        [XmlAttribute("casttime")]
+        public string CastTime { get; set; }
+
+        [XmlAttribute("range")]
+        public string Range { get; set; }
+
+        [XmlAttribute("target")]
+        public string Target { get; set; }
+
+        [XmlAttribute("area")]
+        public string Area { get; set; }
+
+        [XmlAttribute("effect")]
+        public string Effect { get; set; }
+
+        [XmlAttribute("duration")]
+        public string Duration { get; set; }
+
+        [XmlAttribute("save")]
+        public string Save { get; set; }
+
+        [XmlAttribute("resist")]
+        public string Resist { get; set; }
+
+        [XmlAttribute("dc")]
+        public string Dc { get; set; }
+
+        [XmlAttribute("casterlevel")]
+        public string CasterLevel { get; set; }
+
+        [XmlAttribute("componenttext")]
+        public string Component { get; set; }
+
+        [XmlAttribute("schooltext")]
+        public string School { get; set; }
+
+        [XmlAttribute("subschooltext")]
+        public string Subschool { get; set; }
+
+        [XmlAttribute("descriptortext")]
+        public string Descriptor { get; set; }
+
+        [XmlAttribute("savetext")]
+        public string SaveText { get; set; }
+
+        [XmlAttribute("resisttext")]
+        public string ResistText { get; set; }
+
+        [XmlElement("description")]
+        public string Description { get; set; }
+
+        [XmlElement("spellcomp")]
+        public List<string> SpellComponents { get; set; }
+
+        [XmlElement("spellschool")]
+        public List<string> SpellSchools { get; set; }
+
+        [XmlElement("spelldescript")]
+        public string ArcaneSchool{ get; set; }
+
+    }
+
+    public class Feat : AttributeSet3{
+        [XmlElement("featcategory")]
+        public string FeatCategory { get; set; }
 
         [XmlAttribute("profgroup")] 
         public string ProfGroup { get; set; } = "no";
 
         [XmlAttribute("useradded")] 
         public string UserAdded { get; set; } = "yes";
+    }
+
+    [XmlRoot("trait")]
+    public class Trait : AttributeSet3
+    {
+        [XmlElement("traitcategory")]
+        public List<string> TraitCategories { get; set; }
     }
 
     [XmlRoot("maneuvertype")]
@@ -268,7 +393,7 @@ namespace HeroLabExportToPdf.Entities
         [XmlElement("situationalmodifiers")]
         public SituationalModList Situationalmodifiers { get; set; }
         [XmlElement("maneuvertype")]
-        public List<Maneuver> Maneuvertype { get; set; }
+        public List<Maneuver> ManeuverTypes { get; set; }
         [XmlAttribute("cmb")]
         public string Cmb { get; set; }
         [XmlAttribute("cmd")]
@@ -319,25 +444,30 @@ namespace HeroLabExportToPdf.Entities
         public int Copper{get; set;}
     }
 
-    
-    
 
-    public class GearItem
+    public class BaseItem
     {
         [XmlAttribute("name")]
         public string Name { get; set; }
 
         [XmlAttribute("quantity")]
         public string Quantity { get; set; }
+    }
+    
 
+    public class Item : BaseItem
+    {
         [XmlElement("weight")]
-        public TextWithValueElement Weight { get; set; }
+        public AttributeSet1 Weight { get; set; }
 
         [XmlElement("cost")]
-        public TextWithValueElement Cost { get; set; }
+        public AttributeSet1 Cost { get; set; }
+
+        [XmlElement("description")]
+        public string Description { get; set; }
     }
 
-    public class Armor : GearItem
+    public class Armor : Item
     {
         [XmlAttribute("ac")]
         public string Ac { get; set; }
@@ -347,14 +477,8 @@ namespace HeroLabExportToPdf.Entities
     }
 
 
-    public struct Weapon
+    public class Weapon : AttributeSet3
     {
-        [XmlAttribute("name")]
-        public string Name { get; set; }
-
-        [XmlAttribute("categorytext")]
-        public string Category { get; set; }
-
         [XmlAttribute("typetext")]
         public string Type { get; set; }
 
@@ -371,22 +495,36 @@ namespace HeroLabExportToPdf.Entities
         public string Quantity { get; set; }
 
         [XmlElement("weight")]
-        public TextWithValueElement Weight { get; set; }
+        public AttributeSet1 Weight { get; set; }
 
         [XmlElement("cost")]
-        public TextWithValueElement Cost { get; set; }
+        public AttributeSet1 Cost { get; set; }
 
         [XmlElement("wepcategory")]
         public List<string> WeaponCategories { get; set; }
 
         [XmlElement("weptype")]
         public List<string> WeaponTypes { get; set; }
-
-        [XmlElement("description")]
-        public string Description { get; set; }
+        
     }
 
+    public class RangedWeapon : Weapon
+    {
+        public class RangedAttack
+        {
+            [XmlAttribute("attack")]
+            public string Attack { get; set; }
 
+            [XmlAttribute("rangeinctext")]
+            public string RangeText { get; set; }
+
+            [XmlAttribute("rangeincvalue")]
+            public string RangeValue { get; set; }
+        }
+
+        [XmlElement("rangedattack")]
+        public RangedAttack RangeAttack { get; set; }
+    }
 
     [Serializable]
     public struct Personal

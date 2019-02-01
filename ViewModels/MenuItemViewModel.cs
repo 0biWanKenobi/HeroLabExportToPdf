@@ -3,10 +3,13 @@ using Caliburn.Micro;
 
 namespace HeroLabExportToPdf.ViewModels
 {
+    public enum MenuItemType { String, Checkbox}
+
     public class MenuItemViewModel : PropertyChangedBase
     {
         private string _text, _value;
-        
+
+
         public string Text
         {
             get => _text;
@@ -28,6 +31,8 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Value);
             }
         }
+
+        public MenuItemType Type = MenuItemType.String;
 
         public string Description { get; set; }
 

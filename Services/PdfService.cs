@@ -8,6 +8,7 @@ using Aspose.Pdf;
 using Aspose.Pdf.Annotations;
 using Aspose.Pdf.Devices;
 using Aspose.Pdf.Forms;
+using Aspose.Pdf.Text;
 using HeroLabExportToPdf.Business;
 using Color = Aspose.Pdf.Color;
 using Rectangle = Aspose.Pdf.Rectangle;
@@ -149,22 +150,48 @@ namespace HeroLabExportToPdf.Services
 
         }
 
+
+        private string TranslateFontName(string compactName)
+        {
+            switch (compactName)
+            {
+                case "Cour": return "Courier";
+                case "CoBo": return "CourierBold";
+                case "CoOb": return "CourierOblique";
+                case "CoBO": return "CourierBoldOblique";
+                case "Helv": return "Helvetica";
+                case "HeBo": return "HelveticaBold";
+                case "HeOb": return "HelveticaOblique";
+                case "HeBO": return "HelveticaBoldOblique";
+                case "Symb": return "Symbol";
+                case "TiRo": return "TimesRoman";
+                case "TiBo": return "TimesBold";
+                case "TiIt": return "TimesItalic";
+                case "TiBI": return "TimesBoldItalic";
+                case "ZaDb": return "ZapfDingbats";
+                default: return compactName;
+            }
+        }
+
+
         public IEnumerable GetFields(double wpfW, double wpfH)
         {
 
-            
+            var pdfForm = new Aspose.Pdf.Facades.Form(PdfDoc);
             var fl = Fields.Select(f =>
                 {
                     var pageW = PdfDoc.Pages[f.PageIndex].Rect.Width;
                     var pageH = PdfDoc.Pages[f.PageIndex].Rect.Height;
                     var scaleX = wpfW / pageW ;
-                    var scaleY = wpfH / pageH ;
-                    
+                    var scaleY = wpfH / pageH ;                 
+
+                    var font = FontRepository.FindFont(TranslateFontName(f.DefaultAppearance.FontName));
+
                     return (
                         page: f.PageIndex
                         , label: f.PartialName
                         , value: f.Value
-                        , font: f.DefaultAppearance.FontName
+                        , font: font.DecodedFontName
                         , type: f is CheckboxField ? 1 : 2
                         , width: f.Rect.Width * scaleX
                         , height: f.Rect.Height * scaleY

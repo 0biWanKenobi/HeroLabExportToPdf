@@ -43,13 +43,12 @@
                         Text="{Binding Text}" 
                         Background="Transparent"
                         ToolTip="{Binding Text}"
-                        FontFamily="{Binding FontFamily}"
+                        FontFamily=  "{Binding FontFamily}"
                         VerticalAlignment="Center"
                         Foreground="White"
                         Margin="2,2"
                     />
                 </Viewbox>
-                <TextBlock Visibility="Collapsed" FontSize="{Binding FontSize, ElementName=RTextBlock }"></TextBlock>
             </Grid>
         </ControlTemplate>
 

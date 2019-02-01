@@ -72,19 +72,14 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Page);
             }
         }
-
-
-        
        
-        public string FontFamily { get; set; }
+        public FontFamily FontFamily { get; set; }
 
         public double FontSize{get; private set; }
 
-        
-
         public string Text
         {
-            get => _text == "Yes" && Type == 1 ? "\u2713" : _text;
+            get =>  _text;
             set
             {
                 if (_text == value) return;
@@ -92,8 +87,6 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Text);
             }
         }
-
-
         
         public ObservableCollection<MenuItemViewModel> RectangleContextMenu
         {
@@ -254,7 +247,7 @@ namespace HeroLabExportToPdf.ViewModels
                 NotifyOfPropertyChange(() => Y);
             }
         }
-        public int Type { get; private set; }
+        public MenuItemType Type { get; set; }
         
 
         private double _initialDragX, _initialDragY;
@@ -262,7 +255,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         #endregion
        
-        public FieldViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, int pageIndex, int type, string text,
+        public FieldViewModel(IEventAggregator eventAggregator, MenuViewModel menuViewModel, int pageIndex, string text,
             string label, string fontFamily, double x, double y,
             double width, double height, Color color) 
         {
@@ -274,11 +267,9 @@ namespace HeroLabExportToPdf.ViewModels
             _scaleX = 1;
             _scaleY = 1;
             Page = pageIndex;
-            Type = type;
             Text = text;
             Tooltip = label;
-            FontFamily = fontFamily;
-
+            FontFamily = new FontFamily(fontFamily);
 
             CanDoRepositioning = false;
             eventAggregator.Subscribe(this);
@@ -316,7 +307,13 @@ namespace HeroLabExportToPdf.ViewModels
         public void UpdateField(MenuItemViewModel selectedMenuOption)
         {
             Tooltip = selectedMenuOption.Description;
-            Text = selectedMenuOption.Value;
+            Type = selectedMenuOption.Type;
+            Text = Type == MenuItemType.Checkbox 
+                ?  selectedMenuOption.Value.ToLower() == "yes" 
+                    ? "\u2713" 
+                    : "\u20E0"
+                : selectedMenuOption.Value ;
+            
             Id = selectedMenuOption.Id;
         }
 

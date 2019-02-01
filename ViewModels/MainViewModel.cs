@@ -114,9 +114,9 @@ namespace HeroLabExportToPdf.ViewModels
                         X = field.X,
                         Y = field.Y,
                         FontSize = field.FontSize,
-                        Font = field.FontFamily,
+                        Font = field.FontFamily.ToString(),
                         Page = field.Page,
-                        Type = field.Type
+                        Type = (int)field.Type
                     }
                 );
 

@@ -199,7 +199,7 @@ namespace HeroLabExportToPdf.ViewModels
 
             foreach ((int pageIndex, string label, string value, string font, int type, double width, double height, double x, double y, int index) field in _pdfService.GetFields(PdfImage.Width, PdfImage.Height))
             {
-                var r = _fieldFactory.Create(this, field.pageIndex, FormFields.Count, field.type, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
+                var r = _fieldFactory.Create(this, field.pageIndex, FormFields.Count, field.value, field.label, field.font, field.x, field.y, field.width, field.height,
                     Color.FromRgb(129, 63, 191));
                 
                 FormFields.Add(r);
@@ -211,14 +211,15 @@ namespace HeroLabExportToPdf.ViewModels
             FormFields.Clear();
             foreach (var field in formFields)
             {
-                var r = _fieldFactory.Create(this, field.Page, FormFields.Count, field.Type, field.X, field.Y, field.Width, field.Height,
+                var r = _fieldFactory.Create(this, field.Page, FormFields.Count, field.X, field.Y, field.Width, field.Height,
                     Color.FromRgb(129, 63, 191));
 
                 var matchingMenuElement = FindById(Menu, field.Id);
 
                 r.Text = matchingMenuElement?.Value;
                 r.Tooltip = matchingMenuElement?.Text;
-                
+                if(matchingMenuElement != null)
+                    r.Type = matchingMenuElement.Type;
 
                 FormFields.Add(r);
             }
@@ -262,7 +263,7 @@ namespace HeroLabExportToPdf.ViewModels
 
         public void Handle(CanvasDrawn message)
         {
-            var newField = _fieldFactory.Create(this, CurrentPageIndex, FormFields.Count, 0, message.X, message.Y, message.Width, message.Height,
+            var newField = _fieldFactory.Create(this, CurrentPageIndex, FormFields.Count, message.X, message.Y, message.Width, message.Height,
                 Color.FromRgb( 129, 63, 191));
             _context.Send(c =>
                     FormFields.Add(newField)
